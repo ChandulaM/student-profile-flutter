@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/student/student_home.dart';
@@ -16,9 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Student Profile',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
       initialRoute: Authenticate.routeName,
       routes: {
         Authenticate.routeName: (context) => const Authenticate(),
