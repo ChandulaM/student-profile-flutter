@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:student_profile/screens/login.dart';
+import 'package:student_profile/screens/authentication/authenticate.dart';
+import 'package:student_profile/screens/authentication/login.dart';
+import 'package:student_profile/screens/student/student_home.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +19,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const Login(),
+      initialRoute: Authenticate.routeName,
+      routes: {
+        Authenticate.routeName: (context) => const Authenticate(),
+        StudentHome.routeName: (context) => const StudentHome(),
+      },
     );
   }
 }
