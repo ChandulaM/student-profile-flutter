@@ -4,4 +4,9 @@ class User {
   final String name;
 
   User({required this.uid, required this.role, required this.name});
+
+  @override
+  String toString() {
+    return 'User{uid: $uid, role: $role, name: $name}';
+  }
 }

@@ -19,7 +19,9 @@ class Login extends StatelessWidget {
               height: 10.0,
             ),
             ElevatedButton(onPressed: () {}, child: Text('Admin')),
-            ElevatedButton(onPressed: () {}, child: Text('Teacher')),
+            ElevatedButton(
+                onPressed: () => Navigator.pushNamed(context, '/teacherHome'),
+                child: Text('Teacher')),
             ElevatedButton(
                 onPressed: () => Navigator.pushNamed(context, '/studentHome'),
                 child: Text('Student'))

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:student_profile/common/subject_item_card.dart';
+import 'package:student_profile/models/Subject.dart';
 
 import 'marks_widget.dart';
 
@@ -12,6 +13,10 @@ class StudentMarks extends StatefulWidget {
 }
 
 class _StudentMarksState extends State<StudentMarks> {
+  void onTap() {
+    print('tapped');
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,15 +39,22 @@ class _StudentMarksState extends State<StudentMarks> {
             const SizedBox(
               height: 12.0,
             ),
-            const ItemCard(
-              contentToDisplay: SubjectMarks(),
+            ItemCard(
+              onPressed: onTap,
+              contentToDisplay: SubjectMarks(
+                  Subject(subCode: 'MA001', subject: 'Maths'),
+                  marks: 75.0),
             ),
-            const ItemCard(
-              contentToDisplay: SubjectMarks(),
-            ),
-            const ItemCard(
-              contentToDisplay: SubjectMarks(),
-            ),
+            ItemCard(
+                onPressed: onTap,
+                contentToDisplay: SubjectMarks(
+                    Subject(subCode: 'MA001', subject: 'Maths'),
+                    marks: 75.0)),
+            ItemCard(
+                onPressed: onTap,
+                contentToDisplay: SubjectMarks(
+                    Subject(subCode: 'MA001', subject: 'Maths'),
+                    marks: 75.0)),
           ],
         ),
       ),
