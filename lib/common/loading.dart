@@ -9,7 +9,7 @@ class LoadingSpinner extends StatelessWidget {
     return const Center(
       child: SpinKitThreeBounce(
         color: Colors.blue,
-        size: 50.0,
+        size: 30.0,
       ),
     );
   }

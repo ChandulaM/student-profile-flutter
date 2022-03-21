@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:student_profile/common/header.dart';
 import 'package:student_profile/common/subject_item_card.dart';
 import 'package:student_profile/models/Subject.dart';
 
@@ -28,14 +28,7 @@ class _StudentMarksState extends State<StudentMarks> {
             const SizedBox(
               height: 12.0,
             ),
-            Text(
-              'Enrolled Subjects',
-              style: GoogleFonts.lato(
-                  textStyle: const TextStyle(
-                      fontSize: 32.0,
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.5)),
-            ),
+            const Header(title: 'Enrolled Subjects'),
             const SizedBox(
               height: 12.0,
             ),

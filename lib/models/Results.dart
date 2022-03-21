@@ -3,7 +3,7 @@ import 'package:student_profile/models/Subject.dart';
 
 class Results {
   final String subject;
-  final double mark;
+  double mark;
 
   Results({required this.subject, required this.mark});
 

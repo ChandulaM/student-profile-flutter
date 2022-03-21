@@ -41,4 +41,12 @@ class StudentServices {
         .snapshots()
         .map(_studentsFromSnapshot);
   }
+
+  Future updateStudentMarks(String uid, List<Results> results) async {
+    final List<Map<String, dynamic>> updatedResults = [];
+    results.forEach((result) {
+      updatedResults.add({"result": result.mark, "subject": result.subject});
+    });
+    return await studentCollection.doc(uid).update({"results": updatedResults});
+  }
 }

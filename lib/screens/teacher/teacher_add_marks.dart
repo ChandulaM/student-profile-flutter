@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:student_profile/common/header.dart';
 import 'package:student_profile/common/loading.dart';
 import 'package:student_profile/common/subject_item_card.dart';
 import 'package:student_profile/models/Subject.dart';
@@ -18,10 +19,9 @@ class AddMarks extends StatefulWidget {
 class _AddMarksState extends State<AddMarks> {
   @override
   Widget build(BuildContext context) {
-    var selectedSubject;
-    void navigateToNextScreen() {
+    void navigateToNextScreen(Subject subject) {
       Navigator.of(context).pushNamed(AddMarkAndRecommendation.routeName,
-          arguments: {"subject": selectedSubject});
+          arguments: {"subject": subject});
     }
 
     return StreamBuilder<Teacher>(
@@ -41,12 +41,7 @@ class _AddMarksState extends State<AddMarks> {
                   const SizedBox(
                     height: 12.0,
                   ),
-                  Text('Subjects',
-                      style: GoogleFonts.lato(
-                          textStyle: const TextStyle(
-                              fontSize: 32.0,
-                              fontWeight: FontWeight.w500,
-                              letterSpacing: 0.5))),
+                  const Header(title: "Subjects"),
                   const SizedBox(
                     height: 12.0,
                   ),
@@ -55,9 +50,10 @@ class _AddMarksState extends State<AddMarks> {
                           itemCount: subjectList.length,
                           itemBuilder: (context, index) {
                             Subject subject = subjectList[index];
-                            selectedSubject = subject;
                             return ItemCard(
-                                onPressed: navigateToNextScreen,
+                                onPressed: () {
+                                  navigateToNextScreen(subject);
+                                },
                                 contentToDisplay: SubjectMarks(subject));
                           }))
                 ],
