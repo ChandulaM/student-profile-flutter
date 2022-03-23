@@ -9,10 +9,15 @@ import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
 
 class AddMarkForm extends StatefulWidget {
-  const AddMarkForm({Key? key, required this.student, required this.subject})
+  const AddMarkForm(
+      {Key? key,
+      required this.student,
+      required this.subject,
+      required this.recommendations})
       : super(key: key);
   final Student student;
   final Subject subject;
+  final List<Recommendation> recommendations;
 
   @override
   _AddMarkFormState createState() => _AddMarkFormState();
@@ -69,11 +74,20 @@ class _AddMarkFormState extends State<AddMarkForm> {
     return currentRecommendation;
   }
 
+  double caculateNewAverage(Student student) {
+    double total = 0;
+    for (var result in student.results) {
+      total += result.mark;
+    }
+    double average = total / student.results.length;
+    return average;
+  }
+
   @override
   Widget build(BuildContext context) {
     Student student = widget.student;
     String subCode = widget.subject.subCode;
-    final studentRecommendations = Provider.of<List<Recommendation>>(context);
+    List<Recommendation> studentRecommendations = widget.recommendations;
 
     double currentMark =
         student.results.firstWhere((result) => result.subject == subCode).mark;
@@ -122,8 +136,10 @@ class _AddMarkFormState extends State<AddMarkForm> {
                         if (_formKey.currentState!.validate()) {
                           List<Results> newResults = createUpdatedResultsList(
                               student.results, subCode);
-                          await StudentServices()
-                              .updateStudentMarks(student.uid, newResults);
+                          double newAverage = caculateNewAverage(student);
+                          await StudentServices().updateStudentMarks(
+                              student.uid, newResults, newAverage);
+
                           if (_recommendation != "") {
                             Recommendation recommendation =
                                 createStudentRecommendations(

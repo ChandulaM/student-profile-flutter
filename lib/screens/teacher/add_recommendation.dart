@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
+import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/screens/teacher/form_add_mark.dart';
@@ -27,6 +28,7 @@ class _AddMarkAndRecommendationState extends State<AddMarkAndRecommendation> {
     }
 
     final students = Provider.of<List<Student>>(context);
+    final studentRecommendations = Provider.of<List<Recommendation>>(context);
     final List<Student> enrolledStudents = [];
     for (var student in students) {
       if (enrolledInSubject(student)) enrolledStudents.add(student);
@@ -50,6 +52,7 @@ class _AddMarkAndRecommendationState extends State<AddMarkAndRecommendation> {
                   itemBuilder: ((context, index) => AddMarkForm(
                         student: enrolledStudents[index],
                         subject: subject,
+                        recommendations: studentRecommendations,
                       ))),
             )
           ]),
