@@ -17,7 +17,7 @@ class _StudentPositionState extends State<StudentPosition> {
     final students = Provider.of<List<Student>>(context);
     int noOfStudents = students.length;
     int currentPostion =
-        students.indexWhere((student) => student.uid == currentStudent) ?? 0;
+        students.indexWhere((student) => student.uid == currentStudent);
 
     return SafeArea(
       child: Padding(

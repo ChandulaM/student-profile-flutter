@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
@@ -11,6 +12,7 @@ import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/student/student_home.dart';
 import 'package:student_profile/screens/teacher/add_recommendation.dart';
 import 'package:student_profile/screens/teacher/teacher_home.dart';
+import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
 import 'package:student_profile/services/subject_service.dart';
 import 'package:student_profile/services/teacher_service.dart';
@@ -38,6 +40,10 @@ class MyApp extends StatelessWidget {
           initialData: const [],
           value: SubjectServices().getAllSubjects(),
         ),
+        StreamProvider<List<Recommendation>>.value(
+          initialData: const [],
+          value: RecommendationService().recommendations,
+        )
       ],
       child: MaterialApp(
         title: 'Student Profile',
