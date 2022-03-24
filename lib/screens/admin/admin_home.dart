@@ -35,9 +35,9 @@ class _AdminHomeState extends State<AdminHome> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.post_add), label: 'Manage Teachers'),
+              icon: Icon(Icons.manage_accounts), label: 'Manage Teachers'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.post_add), label: 'Manage Students'),
+              icon: Icon(Icons.child_care), label: 'Manage Students'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,
