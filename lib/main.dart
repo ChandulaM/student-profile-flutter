@@ -7,6 +7,7 @@ import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
+import 'package:student_profile/screens/admin/admin_home.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/student/student_home.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
         initialRoute: Authenticate.routeName,
         routes: {
           Authenticate.routeName: (context) => const Authenticate(),
+          AdminHome.routeName: (context) => const AdminHome(),
           StudentHome.routeName: (context) => const StudentHome(),
           TeacherHome.routeName: (context) => const TeacherHome(),
           AddMarkAndRecommendation.routeName: (context) =>
