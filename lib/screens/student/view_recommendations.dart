@@ -133,9 +133,11 @@ class _ViewRecommendationsState extends State<ViewRecommendations> {
                                         studentRecommendations,
                                         studentId,
                                         subject.subCode);
-                                await RecommendationService()
-                                    .addOrUpdateRecommendation(
-                                        recommendationToDelete);
+                                showAlertDialogBox(
+                                    context,
+                                    RecommendationService()
+                                        .addOrUpdateRecommendation,
+                                    recommendationToDelete);
                               },
                               icon: const Icon(
                                 Icons.delete,
@@ -151,4 +153,39 @@ class _ViewRecommendationsState extends State<ViewRecommendations> {
       )),
     );
   }
+}
+
+showAlertDialogBox(
+    BuildContext context, Function callback, Recommendation recommendation) {
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed: () {
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+  Widget continueButton = TextButton(
+    child: const Text("Delete"),
+    onPressed: () async {
+      await callback(recommendation);
+      Navigator.of(context, rootNavigator: true).pop();
+    },
+  );
+
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("Delete Recommendation"),
+    content: const Text(
+        "Are you sure you want to delete the selected recommendedation?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
 }

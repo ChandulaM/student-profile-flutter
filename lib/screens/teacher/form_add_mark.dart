@@ -7,6 +7,7 @@ import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddMarkForm extends StatefulWidget {
   const AddMarkForm(
@@ -57,6 +58,17 @@ class _AddMarkFormState extends State<AddMarkForm> {
       }
     }
     return recommendation;
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue[300],
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   String findCurrentRecommendation(
@@ -119,6 +131,7 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   Expanded(
                     child: TextFormField(
                       initialValue: currentMark.toString(),
+                      keyboardType: TextInputType.number,
                       decoration:
                           textFieldDecoration.copyWith(hintText: "Enter marks"),
                       validator: (val) => val!.isEmpty ? 'Enter mark' : null,
@@ -137,15 +150,22 @@ class _AddMarkFormState extends State<AddMarkForm> {
                           List<Results> newResults = createUpdatedResultsList(
                               student.results, subCode);
                           double newAverage = caculateNewAverage(student);
-                          await StudentServices().updateStudentMarks(
-                              student.uid, newResults, newAverage);
+                          StudentServices()
+                              .updateStudentMarks(
+                                  student.uid, newResults, newAverage)
+                              .then((value) =>
+                                  showToast("Marks updated successfully"))
+                              .catchError((error) => print(error));
 
                           if (_recommendation != "") {
                             Recommendation recommendation =
                                 createStudentRecommendations(
                                     studentRecommendations, student, subCode);
-                            await RecommendationService()
-                                .addOrUpdateRecommendation(recommendation);
+                            RecommendationService()
+                                .addOrUpdateRecommendation(recommendation)
+                                .then((value) =>
+                                    showToast("Recommendation updated"))
+                                .catchError((error) => print(error));
                           }
                         }
                       },

@@ -45,7 +45,7 @@ class StudentServices {
         .map(_studentsFromSnapshot);
   }
 
-  Future updateStudentMarks(
+  Future<dynamic> updateStudentMarks(
       String uid, List<Results> results, double newAverage) async {
     final List<Map<String, dynamic>> updatedResults = [];
     results.forEach((result) {
