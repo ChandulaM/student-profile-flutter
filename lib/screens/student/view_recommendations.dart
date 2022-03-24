@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
+import 'package:student_profile/services/recommendation_service.dart';
 
 class ViewRecommendations extends StatefulWidget {
   const ViewRecommendations({Key? key}) : super(key: key);
@@ -13,6 +14,8 @@ class ViewRecommendations extends StatefulWidget {
 }
 
 class _ViewRecommendationsState extends State<ViewRecommendations> {
+  bool _selectedFlag = false;
+
   String _findRecommendationForSubject(
       List<Recommendation> recommendations, String studentId, String subCode) {
     String recommendation = "";
@@ -23,6 +26,22 @@ class _ViewRecommendationsState extends State<ViewRecommendations> {
             recommendation = subRec['recommendation'] as String;
           }
         });
+      }
+    });
+    return recommendation;
+  }
+
+  Recommendation _removeRecommendation(
+      List<Recommendation> studentRecommendations,
+      String studentId,
+      String subCode) {
+    Recommendation recommendation =
+        Recommendation(studentId: studentId, recommendations: [{}]);
+    studentRecommendations.forEach((stuRec) {
+      if (stuRec.studentId == studentId) {
+        recommendation = stuRec;
+        stuRec.recommendations
+            .removeWhere((subRec) => subRec['subject'] == subCode);
       }
     });
     return recommendation;
@@ -63,30 +82,70 @@ class _ViewRecommendationsState extends State<ViewRecommendations> {
               ),
             ),
             const SizedBox(height: 20.0),
-            Container(
-                width: double.infinity,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Colors.blue[100],
-                  borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(25.0),
-                      bottomRight: Radius.circular(5.0),
-                      topLeft: Radius.circular(5.0),
-                      bottomLeft: Radius.circular(25.0)),
-                ),
-                child: recommendation == ""
-                    ? const Center(
-                        child: Text(
-                        'No recommendations',
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.w300),
-                      ))
-                    : Container(
-                        margin: const EdgeInsets.all(10.0),
-                        child: Text(
-                          recommendation,
-                          style: const TextStyle(fontSize: 16.0),
-                        )))
+            recommendation == ""
+                ? const Center(
+                    child: Text(
+                    'No recommendations',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w300),
+                  ))
+                : Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onLongPress: () => setState(() {
+                            _selectedFlag = true;
+                          }),
+                          onTap: () => setState(() {
+                            _selectedFlag = false;
+                          }),
+                          child: Container(
+                              height: 80,
+                              decoration: BoxDecoration(
+                                  color: _selectedFlag
+                                      ? Colors.blue[200]
+                                      : Colors.blue[100],
+                                  borderRadius: const BorderRadius.only(
+                                    topRight: Radius.circular(25.0),
+                                    bottomRight: Radius.circular(5.0),
+                                    topLeft: Radius.circular(5.0),
+                                    bottomLeft: Radius.circular(25.0),
+                                  ),
+                                  border: _selectedFlag
+                                      ? Border.all(
+                                          color: Colors.blue, width: 2.0)
+                                      : null),
+                              child: Container(
+                                  margin: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    recommendation,
+                                    style: const TextStyle(fontSize: 16.0),
+                                  ))),
+                        ),
+                      ),
+                      _selectedFlag
+                          ? IconButton(
+                              onPressed: () async {
+                                Recommendation recommendationToDelete =
+                                    _removeRecommendation(
+                                        studentRecommendations,
+                                        studentId,
+                                        subject.subCode);
+                                await RecommendationService()
+                                    .addOrUpdateRecommendation(
+                                        recommendationToDelete);
+                              },
+                              icon: const Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ))
+                          : const SizedBox(
+                              width: 2.0,
+                            ),
+                    ],
+                  ),
           ],
         ),
       )),
