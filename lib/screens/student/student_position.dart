@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:student_profile/common/header.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/screens/student/positions_widget.dart';
 
@@ -23,7 +24,15 @@ class _StudentPositionState extends State<StudentPosition> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(
+              height: 12.0,
+            ),
+            const Header(title: "Class Ranking"),
+            const SizedBox(
+              height: 12.0,
+            ),
             Container(
               width: double.infinity,
               height: 70.0,
