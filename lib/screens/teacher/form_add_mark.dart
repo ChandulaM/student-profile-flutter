@@ -7,12 +7,18 @@ import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class AddMarkForm extends StatefulWidget {
-  const AddMarkForm({Key? key, required this.student, required this.subject})
+  const AddMarkForm(
+      {Key? key,
+      required this.student,
+      required this.subject,
+      required this.recommendations})
       : super(key: key);
   final Student student;
   final Subject subject;
+  final List<Recommendation> recommendations;
 
   @override
   _AddMarkFormState createState() => _AddMarkFormState();
@@ -54,6 +60,17 @@ class _AddMarkFormState extends State<AddMarkForm> {
     return recommendation;
   }
 
+  void showToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.blue[300],
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   String findCurrentRecommendation(
       List<Recommendation> recommendations, Student student, String subCode) {
     String currentRecommendation = '';
@@ -69,11 +86,20 @@ class _AddMarkFormState extends State<AddMarkForm> {
     return currentRecommendation;
   }
 
+  double caculateNewAverage(Student student) {
+    double total = 0;
+    for (var result in student.results) {
+      total += result.mark;
+    }
+    double average = total / student.results.length;
+    return average;
+  }
+
   @override
   Widget build(BuildContext context) {
     Student student = widget.student;
     String subCode = widget.subject.subCode;
-    final studentRecommendations = Provider.of<List<Recommendation>>(context);
+    List<Recommendation> studentRecommendations = widget.recommendations;
 
     double currentMark =
         student.results.firstWhere((result) => result.subject == subCode).mark;
@@ -105,6 +131,7 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   Expanded(
                     child: TextFormField(
                       initialValue: currentMark.toString(),
+                      keyboardType: TextInputType.number,
                       decoration:
                           textFieldDecoration.copyWith(hintText: "Enter marks"),
                       validator: (val) => val!.isEmpty ? 'Enter mark' : null,
@@ -120,16 +147,25 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          List<Results> newResults = createUpdatedResultsList(
-                              student.results, subCode);
-                          await StudentServices()
-                              .updateStudentMarks(student.uid, newResults);
+                          Results newResult =
+                              Results(subject: subCode, mark: _subjectMark);
+                          double newAverage = caculateNewAverage(student);
+                          StudentServices()
+                              .updateStudentMarks(student.uid, newResult,
+                                  newAverage: newAverage)
+                              .then((value) =>
+                                  showToast("Marks updated successfully"))
+                              .catchError((error) => print(error));
+
                           if (_recommendation != "") {
                             Recommendation recommendation =
                                 createStudentRecommendations(
                                     studentRecommendations, student, subCode);
-                            await RecommendationService()
-                                .addOrUpdateRecommendation(recommendation);
+                            RecommendationService()
+                                .addOrUpdateRecommendation(recommendation)
+                                .then((value) =>
+                                    showToast("Recommendation updated"))
+                                .catchError((error) => print(error));
                           }
                         }
                       },

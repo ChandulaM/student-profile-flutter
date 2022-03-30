@@ -11,10 +11,10 @@ class ItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onPressed,
-      child: Card(
-        elevation: 2.0,
+      child: Container(
+        decoration: BoxDecoration(
+            color: Colors.grey[200], borderRadius: BorderRadius.circular(10.0)),
         margin: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 8.0),
-        color: Colors.grey[200],
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 14.0),
           child: Row(

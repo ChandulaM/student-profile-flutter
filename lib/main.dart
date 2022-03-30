@@ -7,16 +7,17 @@ import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
+import 'package:student_profile/screens/admin/admin_home.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/recomendation/recommendations_screen.dart';
 import 'package:student_profile/screens/student/student_home.dart';
+import 'package:student_profile/screens/student/view_recommendations.dart';
 import 'package:student_profile/screens/teacher/add_recommendation.dart';
 import 'package:student_profile/screens/teacher/teacher_home.dart';
 import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
 import 'package:student_profile/services/subject_service.dart';
-import 'package:student_profile/services/teacher_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -53,11 +54,14 @@ class MyApp extends StatelessWidget {
         initialRoute: Authenticate.routeName,
         routes: {
           Authenticate.routeName: (context) => const Authenticate(),
+          AdminHome.routeName: (context) => const AdminHome(),
           StudentHome.routeName: (context) => const StudentHome(),
           TeacherHome.routeName: (context) => const TeacherHome(),
           AddMarkAndRecommendation.routeName: (context) =>
               const AddMarkAndRecommendation(),
           RecommendationScreen.routeName: (context) => const RecommendationScreen(),
+          ViewRecommendations.routeName: (context) =>
+              const ViewRecommendations(),
         },
       ),
     );

@@ -45,11 +45,27 @@ class StudentServices {
         .map(_studentsFromSnapshot);
   }
 
-  Future updateStudentMarks(String uid, List<Results> results) async {
-    final List<Map<String, dynamic>> updatedResults = [];
-    results.forEach((result) {
-      updatedResults.add({"result": result.mark, "subject": result.subject});
-    });
-    return await studentCollection.doc(uid).update({"results": updatedResults});
+  Future<dynamic> updateStudentMarks(String uid, Results result,
+      {double? newAverage}) async {
+    List<Map<String, dynamic>> updatedResult = [
+      {"result": result.mark, "subject": result.subject}
+    ];
+
+    return await studentCollection.doc(uid).update(newAverage == null
+        ? {"results": FieldValue.arrayUnion(updatedResult)}
+        : {
+            "average": newAverage,
+            "results": FieldValue.arrayUnion(updatedResult)
+          });
+  }
+
+  Future updateStudentSubjects(String uid, Subject subject) async {
+    List<Map<String, dynamic>> subjectToAdd = [
+      {"subject": subject.subject, "subCode": subject.subCode}
+    ];
+
+    return await studentCollection
+        .doc(uid)
+        .update({"subjects": FieldValue.arrayUnion(subjectToAdd)});
   }
 }
