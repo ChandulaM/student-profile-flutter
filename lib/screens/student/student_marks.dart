@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:student_profile/common/header.dart';
 import 'package:student_profile/common/subject_item_card.dart';
 import 'package:student_profile/models/Subject.dart';
+import 'package:student_profile/screens/recomendation/recommendations_screen.dart';
 
 import 'marks_widget.dart';
 
@@ -13,8 +14,9 @@ class StudentMarks extends StatefulWidget {
 }
 
 class _StudentMarksState extends State<StudentMarks> {
-  void onTap() {
+  void onTap(BuildContext context) {
     print('tapped');
+    Navigator.pushNamed(context, RecommendationScreen.routeName);
   }
 
   @override
@@ -33,18 +35,18 @@ class _StudentMarksState extends State<StudentMarks> {
               height: 12.0,
             ),
             ItemCard(
-              onPressed: onTap,
+              onPressed:() {onTap(context);},
               contentToDisplay: SubjectMarks(
                   Subject(subCode: 'MA001', subject: 'Maths'),
                   marks: 75.0),
             ),
             ItemCard(
-                onPressed: onTap,
+                onPressed: () {onTap(context);},
                 contentToDisplay: SubjectMarks(
                     Subject(subCode: 'MA001', subject: 'Maths'),
                     marks: 75.0)),
             ItemCard(
-                onPressed: onTap,
+                onPressed: () {onTap(context);},
                 contentToDisplay: SubjectMarks(
                     Subject(subCode: 'MA001', subject: 'Maths'),
                     marks: 75.0)),

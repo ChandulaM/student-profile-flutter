@@ -10,6 +10,9 @@ class RecommendationService {
         studentId: doc.data().toString().contains('studentId')
             ? doc.get('studentId')
             : '',
+        message: doc.data().toString().contains('studentId')
+            ? doc.get('message')
+            : '',
         recommendations: doc.data().toString().contains('recommendations')
             ? List<Map<String, String>>.from(
                 doc.get('recommendations').map((rec) {
