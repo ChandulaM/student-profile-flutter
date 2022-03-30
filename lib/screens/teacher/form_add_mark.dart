@@ -101,7 +101,7 @@ class _AddMarkFormState extends State<AddMarkForm> {
     String subCode = widget.subject.subCode;
     List<Recommendation> studentRecommendations = widget.recommendations;
 
-    double currentMark =
+    _subjectMark =
         student.results.firstWhere((result) => result.subject == subCode).mark;
     String currentRecommendation =
         findCurrentRecommendation(studentRecommendations, student, subCode);
@@ -130,14 +130,14 @@ class _AddMarkFormState extends State<AddMarkForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      initialValue: currentMark.toString(),
+                      initialValue: _subjectMark.toString(),
                       keyboardType: TextInputType.number,
                       decoration:
                           textFieldDecoration.copyWith(hintText: "Enter marks"),
                       validator: (val) => val!.isEmpty ? 'Enter mark' : null,
                       onChanged: (val) => setState(() {
                         _subjectMark =
-                            val.isNotEmpty ? double.parse(val) : currentMark;
+                            val.isNotEmpty ? double.parse(val) : _subjectMark;
                       }),
                     ),
                   ),
