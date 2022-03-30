@@ -11,7 +11,11 @@ import 'package:student_profile/screens/teacher/add_recommendation.dart';
 import 'marks_widget.dart';
 
 class StudentMarks extends StatefulWidget {
-  const StudentMarks({Key? key}) : super(key: key);
+  final Student currentStudent;
+  final List<Subject> subjectList;
+  const StudentMarks(
+      {Key? key, required this.currentStudent, required this.subjectList})
+      : super(key: key);
 
   @override
   _StudentMarksState createState() => _StudentMarksState();
@@ -31,42 +35,25 @@ class _StudentMarksState extends State<StudentMarks> {
 
   @override
   Widget build(BuildContext context) {
-    final currentStudent = Provider.of<List<Student>>(context)
-        .firstWhere((student) => student.uid == _currentStudentUid);
-    final subjectList = Provider.of<List<Subject>>(context);
+    final currentStudent = widget.currentStudent;
+    final subjectList = widget.subjectList;
 
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(12.0, 8.0, 12.0, 5.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(
-              height: 12.0,
-            ),
-            const Header(title: 'Enrolled Subjects'),
-            const SizedBox(
-              height: 12.0,
-            ),
-            Flexible(
-              child: ListView.builder(
-                  itemCount: currentStudent.results.length,
-                  itemBuilder: (context, index) {
-                    Results currentResult = currentStudent.results[index];
-                    Subject currentSubject =
-                        _findSubject(subjectList, currentResult.subject);
-                    return ItemCard(
-                      onPressed: () {
-                        navigateToNextScreen(currentSubject);
-                      },
-                      contentToDisplay: SubjectMarks(currentSubject,
-                          marks: currentResult.mark),
-                    );
-                  }),
-            ),
-          ],
-        ),
-      ),
+    return Container(
+      margin: const EdgeInsets.only(top: 8.0),
+      child: ListView.builder(
+          itemCount: currentStudent.results.length,
+          itemBuilder: (context, index) {
+            Results currentResult = currentStudent.results[index];
+            Subject currentSubject =
+                _findSubject(subjectList, currentResult.subject);
+            return ItemCard(
+              onPressed: () {
+                navigateToNextScreen(currentSubject);
+              },
+              contentToDisplay:
+                  SubjectMarks(currentSubject, marks: currentResult.mark),
+            );
+          }),
     );
   }
 }
