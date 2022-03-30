@@ -147,12 +147,12 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          List<Results> newResults = createUpdatedResultsList(
-                              student.results, subCode);
+                          Results newResult =
+                              Results(subject: subCode, mark: _subjectMark);
                           double newAverage = caculateNewAverage(student);
                           StudentServices()
-                              .updateStudentMarks(
-                                  student.uid, newResults, newAverage)
+                              .updateStudentMarks(student.uid, newResult,
+                                  newAverage: newAverage)
                               .then((value) =>
                                   showToast("Marks updated successfully"))
                               .catchError((error) => print(error));
