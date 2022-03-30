@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
+import 'package:student_profile/screens/authentication/signup.dart';
 import 'package:student_profile/screens/student/student_home.dart';
 
 void main() {
@@ -11,7 +11,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +19,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
       initialRoute: Authenticate.routeName,
       routes: {
-        Authenticate.routeName: (context) => const Authenticate(),
+        Login.routeName: (context) => const Login(),
+        SignUp.routeName: (context) => const SignUp(),
         StudentHome.routeName: (context) => const StudentHome(),
       },
     );
