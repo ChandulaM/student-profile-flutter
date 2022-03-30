@@ -2,6 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:student_profile/common/header.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:student_profile/models/user.dart';
+import 'package:student_profile/screens/admin/teacher_list.dart';
 
 class ManageTeacher extends StatefulWidget {
   const ManageTeacher({Key? key}) : super(key: key);
@@ -10,12 +13,63 @@ class ManageTeacher extends StatefulWidget {
   _ManageTeacherState createState() => _ManageTeacherState();
 }
 
+class Animal {
+  final int id;
+  final String name;
+
+  Animal({
+    required this.id,
+    required this.name,
+  });
+}
+
 class _ManageTeacherState extends State<ManageTeacher> {
-  String dropdownValue = '10A';
+  static final List<Animal> _animals = [
+    Animal(id: 1, name: "Lion"),
+    Animal(id: 2, name: "Flamingo"),
+    Animal(id: 3, name: "Hippo"),
+    Animal(id: 4, name: "Horse"),
+    Animal(id: 5, name: "Tiger"),
+    Animal(id: 6, name: "Penguin"),
+    Animal(id: 7, name: "Spider"),
+    Animal(id: 8, name: "Snake"),
+    Animal(id: 9, name: "Bear"),
+    Animal(id: 10, name: "Beaver"),
+    Animal(id: 11, name: "Cat"),
+    Animal(id: 12, name: "Fish"),
+    Animal(id: 13, name: "Rabbit"),
+    Animal(id: 14, name: "Mouse"),
+    Animal(id: 15, name: "Dog"),
+    Animal(id: 16, name: "Zebra"),
+    Animal(id: 17, name: "Cow"),
+    Animal(id: 18, name: "Frog"),
+    Animal(id: 19, name: "Blue Jay"),
+    Animal(id: 20, name: "Moose"),
+    Animal(id: 21, name: "Gecko"),
+    Animal(id: 22, name: "Kangaroo"),
+    Animal(id: 23, name: "Shark"),
+    Animal(id: 24, name: "Crocodile"),
+    Animal(id: 25, name: "Owl"),
+    Animal(id: 26, name: "Dragonfly"),
+    Animal(id: 27, name: "Dolphin"),
+  ];
+  final _items = _animals
+      .map((animal) => MultiSelectItem<Animal>(animal, animal.name))
+      .toList();
+  List<Animal> _selectedAnimals = [];
+  final _multiSelectKey = GlobalKey<FormFieldState>();
+
+  @override
+  void initState() {
+    _selectedAnimals = _animals;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle style1 =
-        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+    final ButtonStyle style1 = ElevatedButton.styleFrom(
+      textStyle: const TextStyle(fontSize: 20),
+    );
 
     final _formKey = GlobalKey<FormState>();
 
@@ -74,22 +128,20 @@ class _ManageTeacherState extends State<ManageTeacher> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: 10),
                   child: ElevatedButton(
                     style: style1,
-                    onPressed: () {},
-                    child: const Text('Register'),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ElevatedButton(
-                    style: style1,
-                    onPressed: () {},
-                    child: const Text('View'),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const TeacherList()),
+                      );
+                    },
+                    child: const Text('View Registered List'),
                   ),
                 ),
               ],
@@ -173,61 +225,47 @@ class _ManageTeacherState extends State<ManageTeacher> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please Enter Password';
+                            } else if (value.length <= 6) {
+                              return 'Password must have atleast 6 Characters';
                             }
                             return null;
                           },
                         ),
                       ),
                       Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(3),
+                            border: Border.all(
+                                color:
+                                    const Color.fromARGB(255, 122, 121, 121))),
                         margin: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: TextFormField(
-                          autofocus: false,
-                          obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: 'Password ',
-                            labelStyle: TextStyle(fontSize: 20.0),
-                            border: OutlineInputBorder(),
-                            errorStyle: TextStyle(
-                                color: Colors.redAccent, fontSize: 15),
-                          ),
-                          controller: passwordController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please Enter Password';
+                        child: MultiSelectDialogField(
+                          items: _items,
+                          title: const Text("Subjects"),
+                          selectedColor: Colors.blue,
+                          validator: (values) {
+                            if (values == null || values.isEmpty) {
+                              return "Required";
                             }
                             return null;
                           },
+                          buttonIcon: const Icon(
+                            Icons.arrow_drop_down_circle,
+                            color: Colors.blue,
+                          ),
+                          buttonText: const Text(
+                            "Subjects",
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                          onConfirm: (List<Animal> results) {
+                            _selectedAnimals = results;
+                          },
                         ),
                       ),
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(3),
-                              border: Border.all(
-                                  color: const Color.fromARGB(
-                                      255, 122, 121, 121))),
-                          margin: const EdgeInsets.symmetric(vertical: 10.0),
-                          child: DropdownButton<String>(
-                            value: dropdownValue,
-                            isExpanded: true,
-                            icon: const Icon(Icons.arrow_drop_down_circle),
-                            style: const TextStyle(
-                                color: Color.fromARGB(255, 3, 3, 3),
-                                fontSize: 20),
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropdownValue = newValue!;
-                              });
-                            },
-                            items: <String>['10A', '10B', '11A', '11B']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          )),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [

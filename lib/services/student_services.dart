@@ -12,6 +12,8 @@ class StudentServices {
         uid: doc.reference.id,
         role: doc.data().toString().contains('role') ? doc.get('role') : '',
         name: doc.data().toString().contains('name') ? doc.get('name') : '',
+        email: doc.data().toString().contains('name') ? doc.get('name') : '',
+        password: doc.data().toString().contains('name') ? doc.get('name') : '',
         enrolledSubjects: doc.data().toString().contains('subjects')
             ? List<Subject>.from(doc.get('subjects').map((sub) {
                 return Subject(

@@ -8,6 +8,8 @@ import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
 import 'package:student_profile/screens/admin/admin_home.dart';
+import 'package:student_profile/screens/admin/student_list.dart';
+import 'package:student_profile/screens/admin/teacher_list.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/student/student_home.dart';
@@ -56,6 +58,8 @@ class MyApp extends StatelessWidget {
           AdminHome.routeName: (context) => const AdminHome(),
           StudentHome.routeName: (context) => const StudentHome(),
           TeacherHome.routeName: (context) => const TeacherHome(),
+          TeacherList.routeName: (context) => const TeacherList(),
+          StudentList.routeName: (context) => const StudentList(),
           AddMarkAndRecommendation.routeName: (context) =>
               const AddMarkAndRecommendation(),
           ViewRecommendations.routeName: (context) =>
