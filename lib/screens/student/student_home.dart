@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/screens/student/forums.dart';
+import 'package:student_profile/screens/student/marks_tabbed_screen.dart';
 import 'package:student_profile/screens/student/student_marks.dart';
 import 'package:student_profile/screens/student/student_position.dart';
 import 'package:student_profile/screens/student/student_profile.dart';
+import 'package:student_profile/services/student_services.dart';
+import 'package:provider/provider.dart';
 
 class StudentHome extends StatefulWidget {
   const StudentHome({Key? key}) : super(key: key);
@@ -15,10 +19,9 @@ class StudentHome extends StatefulWidget {
 class _StudentHomeState extends State<StudentHome> {
   int _selectedIndex = 0;
   final List _studentScreens = [
-    StudentProfile(),
-    StudentMarks(),
-    StudentPostion(),
-    Forums()
+    const StudentProfile(),
+    const TabbedScreenMarks(),
+    const StudentPosition(),
   ];
 
   void _onOptionSelect(int index) {
@@ -38,7 +41,6 @@ class _StudentHomeState extends State<StudentHome> {
               icon: Icon(Icons.view_list), label: 'Subjects'),
           BottomNavigationBarItem(
               icon: Icon(Icons.format_list_numbered), label: 'Position'),
-          BottomNavigationBarItem(icon: Icon(Icons.forum), label: 'Forums'),
         ],
         currentIndex: _selectedIndex,
         onTap: _onOptionSelect,
