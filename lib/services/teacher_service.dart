@@ -13,6 +13,8 @@ class TeacherService {
         uid: _currentTeacherId,
         role: snapshot.get('role'),
         name: snapshot.get('name'),
+        email: snapshot.get('email'),
+        password: snapshot.get('password'),
         subjects: List<Subject>.from(snapshot.get('subjects').map((sub) {
           return Subject(subject: sub['subject'], subCode: sub['subCode']);
         })));
