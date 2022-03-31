@@ -1,44 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:student_profile/models/Teacher.dart';
-import 'package:student_profile/models/user.dart';
-import 'package:student_profile/screens/admin/data.dart';
 
 class TeacherList extends StatefulWidget {
-  const TeacherList({Key? key}) : super(key: key);
+  const TeacherList({Key? key, required this.list}) : super(key: key);
   static const String routeName = '/teacherList';
-
+  final List<Teacher> list;
   @override
   _TeacherListState createState() => _TeacherListState();
 }
 
 class _TeacherListState extends State<TeacherList> {
-  List<User> allTeachers = allUsers;
-  List countries = [];
-  List filteredCountries = [];
+  late List<Teacher> allteachers;
+  late List<Teacher> teachers;
+  late List<Teacher> filteredTeachers;
   bool isSearching = false;
-
-  // getCountries() async {
-  //   var response = await Dio().get('https://restcountries.eu/rest/v2/all');
-  //   return response.data;
-  // }
-
-  getTeachers(List<User> user) {
-    Iterable teacher = user.where((e) => e.name == 'tea');
-    
-  }
 
   @override
   void initState() {
-    setState(() {
-      countries = filteredCountries = allTeachers;
-    });
-
+    allteachers = widget.list;
+    teachers = filteredTeachers = allteachers;
     super.initState();
   }
 
   void _filterCountries(value) {
     setState(() {
-      filteredCountries = countries
+      filteredTeachers = teachers
           .where((country) =>
               country.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
@@ -72,7 +58,7 @@ class _TeacherListState extends State<TeacherList> {
                   onPressed: () {
                     setState(() {
                       isSearching = false;
-                      filteredCountries = countries;
+                      filteredTeachers = teachers;
                     });
                   },
                 )
@@ -88,9 +74,9 @@ class _TeacherListState extends State<TeacherList> {
       ),
       body: Container(
         padding: const EdgeInsets.all(10),
-        child: filteredCountries.isNotEmpty
+        child: filteredTeachers.isNotEmpty
             ? ListView.builder(
-                itemCount: filteredCountries.length,
+                itemCount: filteredTeachers.length,
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     // onTap: () {
@@ -107,7 +93,7 @@ class _TeacherListState extends State<TeacherList> {
                             Expanded(
                               flex: 1,
                               child: Text(
-                                filteredCountries[index].name,
+                                filteredTeachers[index].name,
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ),

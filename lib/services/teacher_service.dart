@@ -26,4 +26,12 @@ class TeacherService {
         .snapshots()
         .map(_teacherFromSnapshot);
   }
+
+  List<Teacher> _teachersFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map(_teacherFromSnapshot).toList();
+  }
+
+  Stream<List<Teacher>> getTeachers() {
+    return _teacherCollectionRef.snapshots().map(_teachersFromSnapshot);
+  }
 }

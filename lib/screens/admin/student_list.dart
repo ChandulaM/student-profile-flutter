@@ -1,41 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:student_profile/models/Teacher.dart';
-import 'package:student_profile/models/user.dart';
-import 'package:student_profile/screens/admin/data.dart';
+import 'package:student_profile/models/Student.dart';
 
 class StudentList extends StatefulWidget {
-  const StudentList({Key? key}) : super(key: key);
+  const StudentList({Key? key, required this.list}) : super(key: key);
   static const String routeName = '/studentList';
+  final List<Student> list;
 
   @override
   _StudentListState createState() => _StudentListState();
 }
 
 class _StudentListState extends State<StudentList> {
-  List<User> allStudents = allUsers;
-  List countries = [];
-  List filteredCountries = [];
+  late List<Student> allStudents;
+  late List<Student> students;
+  late List<Student> filteredStudents;
   bool isSearching = false;
-
-  // getCountries() async {
-  //   var response = await Dio().get('https://restcountries.eu/rest/v2/all');
-  //   return response.data;
-  // }
 
   @override
   void initState() {
-    setState(() {
-      countries = filteredCountries = allStudents;
-    });
-
+    allStudents = widget.list;
+    students = filteredStudents = allStudents;
     super.initState();
   }
 
-  void _filterCountries(value) {
+  void _filterstudents(value) {
     setState(() {
-      filteredCountries = countries
-          .where((country) =>
-              country.name.toLowerCase().contains(value.toLowerCase()))
+      filteredStudents = allStudents
+          .where((student) =>
+              student.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
   }
@@ -49,7 +41,9 @@ class _StudentListState extends State<StudentList> {
             ? const Text('Registered Students')
             : TextField(
                 onChanged: (value) {
-                  _filterCountries(value);
+                  setState(() {
+                    _filterstudents(value);
+                  });
                 },
                 style: const TextStyle(color: Colors.white),
                 decoration: const InputDecoration(
@@ -67,7 +61,7 @@ class _StudentListState extends State<StudentList> {
                   onPressed: () {
                     setState(() {
                       isSearching = false;
-                      filteredCountries = countries;
+                      filteredStudents = students;
                     });
                   },
                 )
@@ -82,62 +76,61 @@ class _StudentListState extends State<StudentList> {
         ],
       ),
       body: Container(
-        padding: const EdgeInsets.all(10),
-        child: filteredCountries.isNotEmpty
-            ? ListView.builder(
-                itemCount: filteredCountries.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return GestureDetector(
-                    // onTap: () {
-                    //   Navigator.of(context).pushNamed(Country.routeName,
-                    //       arguments: filteredCountries[index]);
-                    // },
-                    child: Card(
-                      elevation: 10,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10, horizontal: 8),
-                        child: Row(
-                          children: <Widget>[
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                filteredCountries[index].name,
-                                style: const TextStyle(fontSize: 18),
+          padding: const EdgeInsets.all(10),
+          child: filteredStudents.isNotEmpty
+              ? ListView.builder(
+                  itemCount: filteredStudents.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return GestureDetector(
+                      // onTap: () {
+                      //   Navigator.of(context).pushNamed(Country.routeName,
+                      //       arguments: filteredStudents[index]);
+                      // },
+                      child: Card(
+                        elevation: 10,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 8),
+                          child: Row(
+                            children: <Widget>[
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  filteredStudents[index].name,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: IconButton(
-                                onPressed: () => {},
-                                icon: const Icon(Icons.delete_forever_sharp),
-                                color: Colors.red,
-                                iconSize: 30,
+                              Expanded(
+                                flex: 1,
+                                child: IconButton(
+                                  onPressed: () => {},
+                                  icon: const Icon(Icons.delete_forever_sharp),
+                                  color: Colors.red,
+                                  iconSize: 30,
+                                ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 0,
-                              child: IconButton(
-                                onPressed: () => {},
-                                icon: const Icon(Icons.edit_note_rounded),
-                                color: Colors.green,
-                                iconSize: 30,
-                              ),
-                            )
-                          ],
+                              Expanded(
+                                flex: 0,
+                                child: IconButton(
+                                  onPressed: () => {},
+                                  icon: const Icon(Icons.edit_note_rounded),
+                                  color: Colors.green,
+                                  iconSize: 30,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                })
-            : const Center(
-                //child: CircularProgressIndicator(),
-                child: Text(
-                  "No such name registerd !",
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
-      ),
+                    );
+                  })
+              : const Center(
+                  //child: CircularProgressIndicator(),
+                  child: Text(
+                    "No such name registerd !",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                )),
     );
   }
 }
