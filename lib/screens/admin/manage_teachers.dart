@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:student_profile/models/user.dart';
+import 'package:student_profile/models/Teacher.dart';
 import 'package:student_profile/screens/admin/teacher_list.dart';
 
 class ManageTeacher extends StatefulWidget {
@@ -13,55 +14,32 @@ class ManageTeacher extends StatefulWidget {
   _ManageTeacherState createState() => _ManageTeacherState();
 }
 
-class Animal {
+class Subject {
   final int id;
   final String name;
 
-  Animal({
+  Subject({
     required this.id,
     required this.name,
   });
 }
 
 class _ManageTeacherState extends State<ManageTeacher> {
-  static final List<Animal> _animals = [
-    Animal(id: 1, name: "Lion"),
-    Animal(id: 2, name: "Flamingo"),
-    Animal(id: 3, name: "Hippo"),
-    Animal(id: 4, name: "Horse"),
-    Animal(id: 5, name: "Tiger"),
-    Animal(id: 6, name: "Penguin"),
-    Animal(id: 7, name: "Spider"),
-    Animal(id: 8, name: "Snake"),
-    Animal(id: 9, name: "Bear"),
-    Animal(id: 10, name: "Beaver"),
-    Animal(id: 11, name: "Cat"),
-    Animal(id: 12, name: "Fish"),
-    Animal(id: 13, name: "Rabbit"),
-    Animal(id: 14, name: "Mouse"),
-    Animal(id: 15, name: "Dog"),
-    Animal(id: 16, name: "Zebra"),
-    Animal(id: 17, name: "Cow"),
-    Animal(id: 18, name: "Frog"),
-    Animal(id: 19, name: "Blue Jay"),
-    Animal(id: 20, name: "Moose"),
-    Animal(id: 21, name: "Gecko"),
-    Animal(id: 22, name: "Kangaroo"),
-    Animal(id: 23, name: "Shark"),
-    Animal(id: 24, name: "Crocodile"),
-    Animal(id: 25, name: "Owl"),
-    Animal(id: 26, name: "Dragonfly"),
-    Animal(id: 27, name: "Dolphin"),
+  static final List<Subject> _subjects = [
+    Subject(id: 1, name: "Maths"),
+    Subject(id: 2, name: "Science"),
+    Subject(id: 3, name: "Geography"),
+    Subject(id: 4, name: "Helth Sciense"),
+    Subject(id: 5, name: "English"),
   ];
-  final _items = _animals
-      .map((animal) => MultiSelectItem<Animal>(animal, animal.name))
-      .toList();
-  List<Animal> _selectedAnimals = [];
+  final _items =
+      _subjects.map((sub) => MultiSelectItem<Subject>(sub, sub.name)).toList();
+  List<Subject> _selectedSubjects = [];
   final _multiSelectKey = GlobalKey<FormFieldState>();
 
   @override
   void initState() {
-    _selectedAnimals = _animals;
+    _selectedSubjects = _subjects;
     super.initState();
   }
 
@@ -70,6 +48,8 @@ class _ManageTeacherState extends State<ManageTeacher> {
     final ButtonStyle style1 = ElevatedButton.styleFrom(
       textStyle: const TextStyle(fontSize: 20),
     );
+
+    List<Teacher> allTeachers = Provider.of<List<Teacher>>(context);
 
     final _formKey = GlobalKey<FormState>();
 
@@ -138,7 +118,9 @@ class _ManageTeacherState extends State<ManageTeacher> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const TeacherList()),
+                            builder: (context) => TeacherList(
+                                  list: allTeachers,
+                                )),
                       );
                     },
                     child: const Text('View Registered List'),
@@ -261,8 +243,8 @@ class _ManageTeacherState extends State<ManageTeacher> {
                               fontSize: 20,
                             ),
                           ),
-                          onConfirm: (List<Animal> results) {
-                            _selectedAnimals = results;
+                          onConfirm: (List<Subject> results) {
+                            _selectedSubjects = results;
                           },
                         ),
                       ),

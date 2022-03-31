@@ -12,14 +12,6 @@ class User {
       required this.email,
       required this.password});
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
-        uid: json['uid'],
-        role: json['role'],
-        name: json['name'],
-        email: json['email'],
-        password: json['password'],
-      );
-
   Map<String, dynamic> toJson() => {
         'uid': uid,
         'role': role,
@@ -27,6 +19,14 @@ class User {
         'email': email,
         'password': password,
       };
+
+  static User fromJson(Map<String, dynamic> json) => User(
+        uid: json['uid'],
+        role: json['role'],
+        name: json['name'],
+        email: json['email'],
+        password: json['password'],
+      );
 
   @override
   String toString() {

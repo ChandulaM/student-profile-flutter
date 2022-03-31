@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/screens/admin/student_list.dart';
 
 class ManageStudent extends StatefulWidget {
@@ -17,6 +18,8 @@ class _ManageStudentState extends State<ManageStudent> {
   Widget build(BuildContext context) {
     final ButtonStyle style1 =
         ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+
+    List<Student> allStudents = Provider.of<List<Student>>(context);
 
     final _formKey = GlobalKey<FormState>();
 
@@ -85,7 +88,8 @@ class _ManageStudentState extends State<ManageStudent> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => const StudentList()),
+                            builder: (context) =>
+                                StudentList(list: allStudents)),
                       );
                     },
                     child: const Text('View Registered List'),
