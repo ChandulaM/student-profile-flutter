@@ -18,7 +18,6 @@ class TabbedScreenMarks extends StatefulWidget {
 class _TabbedScreenMarksState extends State<TabbedScreenMarks>
     with TickerProviderStateMixin {
   late TabController _tabController;
-  final String _currentStudentUid = "VuN4J8vGqyuaWU0I3FdM";
 
   @override
   void dispose() {
@@ -29,7 +28,6 @@ class _TabbedScreenMarksState extends State<TabbedScreenMarks>
   @override
   Widget build(BuildContext context) {
     _tabController = TabController(length: 2, vsync: this);
-    final currentStudents = Provider.of<List<Student>>(context);
     Student? currentStudent = Provider.of<Student?>(context);
     final subjectList = Provider.of<List<Subject>>(context);
 
