@@ -10,14 +10,25 @@ class TeacherService {
 
   Teacher _teacherFromSnapshot(DocumentSnapshot snapshot) {
     return Teacher(
-        uid: _currentTeacherId,
-        role: snapshot.get('role'),
-        name: snapshot.get('name'),
-        email: snapshot.get('email'),
-        password: snapshot.get('password'),
-        subjects: List<Subject>.from(snapshot.get('subjects').map((sub) {
-          return Subject(subject: sub['subject'], subCode: sub['subCode']);
-        })));
+      uid: snapshot.id,
+      role: snapshot.data().toString().contains('uid')
+          ? snapshot.get('role')
+          : '',
+      name: snapshot.data().toString().contains('name')
+          ? snapshot.get('name')
+          : '',
+      email: snapshot.data().toString().contains('email')
+          ? snapshot.get('email')
+          : '',
+      password: snapshot.data().toString().contains('password')
+          ? snapshot.get('password')
+          : '',
+      subjects: snapshot.data().toString().contains('subjects')
+          ? List<Subject>.from(snapshot.get('subjects').map((sub) {
+              return Subject(subject: sub['subject'], subCode: sub['subCode']);
+            }))
+          : <Subject>[],
+    );
   }
 
   Stream<Teacher> get getTeacher {
@@ -33,5 +44,15 @@ class TeacherService {
 
   Stream<List<Teacher>> getTeachers() {
     return _teacherCollectionRef.snapshots().map(_teachersFromSnapshot);
+  }
+
+  Future addUser(Teacher teacher) async {
+    return await _teacherCollectionRef.add({
+      'name': teacher.name,
+      'email': teacher.email,
+      'password': teacher.password,
+      'role': teacher.role,
+      'subjects': teacher.subjects
+    });
   }
 }

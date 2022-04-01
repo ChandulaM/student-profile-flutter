@@ -12,8 +12,10 @@ class StudentServices {
         uid: doc.reference.id,
         role: doc.data().toString().contains('role') ? doc.get('role') : '',
         name: doc.data().toString().contains('name') ? doc.get('name') : '',
-        email: doc.data().toString().contains('name') ? doc.get('name') : '',
-        password: doc.data().toString().contains('name') ? doc.get('name') : '',
+        email: doc.data().toString().contains('email') ? doc.get('email') : '',
+        password: doc.data().toString().contains('password')
+            ? doc.get('password')
+            : '',
         enrolledSubjects: doc.data().toString().contains('subjects')
             ? List<Subject>.from(doc.get('subjects').map((sub) {
                 return Subject(
@@ -69,5 +71,16 @@ class StudentServices {
     return await studentCollection
         .doc(uid)
         .update({"subjects": FieldValue.arrayUnion(subjectToAdd)});
+  }
+
+  Future<void> addUser(name, email, password) {
+    return studentCollection.add({
+      'name': name,
+      'email': email,
+      'password': password,
+      'role': 'STU',
+      'results': [],
+      'subjects': []
+    });
   }
 }

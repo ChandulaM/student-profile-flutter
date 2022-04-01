@@ -1,10 +1,11 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/screens/admin/student_list.dart';
+import 'package:student_profile/services/student_services.dart';
 
 class ManageStudent extends StatefulWidget {
   const ManageStudent({Key? key}) : super(key: key);
@@ -45,14 +46,39 @@ class _ManageStudentState extends State<ManageStudent> {
       passwordController.clear();
     }
 
-    CollectionReference students =
-        FirebaseFirestore.instance.collection('students');
+    // CollectionReference students =
+    //     FirebaseFirestore.instance.collection('students');
 
-    Future<void> addUser() {
-      return students
-          .add({'name': name, 'email': email, 'password': password})
-          .then((value) => print('User Added'))
-          .catchError((error) => print('Failed to Add user: $error'));
+    // Future<void> addUser() {
+    //   return students
+    //       .add({
+    //         'name': name,
+    //         'email': email,
+    //         'password': password,
+    //         'role': 'STU',
+    //         'results': [],
+    //         'subjects': []
+    //       })
+    //       .then((value) => print('User Added'))
+    //       .catchError((error) => print('Failed to Add user: $error'));
+    // }
+
+    void showToast(String message) {
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: const Color.fromARGB(255, 4, 208, 21),
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+
+    Future<void> registerUser() async {
+      StudentServices().addUser(name, email, password).then((value) {
+        showToast("Student registered successfully");
+      }).catchError((err) => showToast("Something went wrong!"));
+      ;
     }
 
     return Scaffold(
@@ -176,6 +202,8 @@ class _ManageStudentState extends State<ManageStudent> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please Enter Password';
+                            } else if (value.length < 6) {
+                              return 'Password must have atleast 6 Characters';
                             }
                             return null;
                           },
@@ -195,13 +223,12 @@ class _ManageStudentState extends State<ManageStudent> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              // Validate returns true if the form is valid, otherwise false.
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  addUser();
+                                  registerUser();
                                   clearText();
                                 });
                               }
