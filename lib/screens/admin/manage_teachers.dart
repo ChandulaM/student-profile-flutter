@@ -1,11 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
 import 'package:student_profile/screens/admin/teacher_list.dart';
+import 'package:student_profile/services/teacher_service.dart';
 
 class ManageTeacher extends StatefulWidget {
   const ManageTeacher({Key? key}) : super(key: key);
@@ -14,32 +16,25 @@ class ManageTeacher extends StatefulWidget {
   _ManageTeacherState createState() => _ManageTeacherState();
 }
 
-class Subject {
-  final int id;
-  final String name;
-
-  Subject({
-    required this.id,
-    required this.name,
-  });
-}
-
 class _ManageTeacherState extends State<ManageTeacher> {
   static final List<Subject> _subjects = [
-    Subject(id: 1, name: "Maths"),
-    Subject(id: 2, name: "Science"),
-    Subject(id: 3, name: "Geography"),
-    Subject(id: 4, name: "Helth Sciense"),
-    Subject(id: 5, name: "English"),
+    Subject(subCode: 'MA10', subject: "Maths"),
+    Subject(subCode: 'SC10', subject: "Science"),
+    Subject(subCode: 'GEO11', subject: "Geography"),
+    Subject(subCode: 'HSCI10', subject: "Helth Sciense"),
+    Subject(subCode: 'ENG11', subject: "English"),
   ];
-  final _items =
-      _subjects.map((sub) => MultiSelectItem<Subject>(sub, sub.name)).toList();
-  List<Subject> _selectedSubjects = [];
+  final _items = _subjects
+      .map((sub) => MultiSelectItem<Subject>(sub, sub.subject))
+      .toList();
+
+  late List<Subject> _selectedSubjects;
+
   final _multiSelectKey = GlobalKey<FormFieldState>();
 
   @override
   void initState() {
-    _selectedSubjects = _subjects;
+    // _selectedSubjects = _subjects;
     super.initState();
   }
 
@@ -75,15 +70,41 @@ class _ManageTeacherState extends State<ManageTeacher> {
       passwordController.clear();
     }
 
-    CollectionReference students =
-        FirebaseFirestore.instance.collection('students');
+    // CollectionReference students =
+    //     FirebaseFirestore.instance.collection('students');
 
-    Future<void> addUser() {
-      return students
-          .add({'name': name, 'email': email, 'password': password})
-          .then((value) => print('User Added'))
-          .catchError((error) => print('Failed to Add user: $error'));
+    // Future<void> addUser() {
+    //   return students
+    //       .add({'name': name, 'email': email, 'password': password})
+    //       .then((value) => print('User Added'))
+    //       .catchError((error) => print('Failed to Add user: $error'));
+    // }
+
+    void showToast(String message) {
+      Fluttertoast.showToast(
+          msg: message,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 1,
+          backgroundColor: const Color.fromARGB(255, 4, 208, 21),
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
+
+    void registerTeacher() async {
+      Teacher teacher = Teacher(
+          uid: 'uid',
+          role: 'TEA',
+          name: name,
+          email: email,
+          password: password,
+          subjects: _selectedSubjects);
+      await TeacherService().addUser(teacher);
+      // .then((value) => showToast("Teacher registered successfully"))
+      // .catchError((err) => showToast("Something went wrong!"));
+    }
+
+    print(_selectedSubjects);
 
     return Scaffold(
       body: SafeArea(
@@ -207,7 +228,7 @@ class _ManageTeacherState extends State<ManageTeacher> {
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please Enter Password';
-                            } else if (value.length <= 6) {
+                            } else if (value.length < 6) {
                               return 'Password must have atleast 6 Characters';
                             }
                             return null;
@@ -261,14 +282,14 @@ class _ManageTeacherState extends State<ManageTeacher> {
                                 primary: Colors.blueGrey),
                           ),
                           ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               // Validate returns true if the form is valid, otherwise false.
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  addUser();
+                                  registerTeacher();
                                   clearText();
                                 });
                               }
