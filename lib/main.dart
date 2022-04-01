@@ -51,6 +51,10 @@ class MyApp extends StatelessWidget {
         StreamProvider<List<Recommendation>>.value(
           initialData: const [],
           value: RecommendationService().recommendations,
+        ),
+        StreamProvider<Student?>.value(
+          initialData: null,
+          value: StudentServices().getSingleStudent(),
         )
       ],
       child: MaterialApp(
