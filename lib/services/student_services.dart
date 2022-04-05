@@ -29,7 +29,7 @@ class StudentServices {
             ? List<Results>.from(doc.get('results').map((res) {
                 return Results(
                     subject: res['subject'],
-                    mark: double.parse(res['result'].toString()));
+                    mark: double.parse(res['mark'].toString()));
               }))
             : <Results>[],
         average: doc.data().toString().contains('average')

@@ -28,7 +28,7 @@ class _AddMarkAndRecommendationState extends State<AddMarkAndRecommendation> {
     }
 
     final students = Provider.of<List<Student>>(context);
-    final studentRecommendations = Provider.of<List<Recommendation>>(context);
+    //final studentRecommendations = Provider.of<List<Recommendation>>(context);
     final List<Student> enrolledStudents = [];
     for (var student in students) {
       if (enrolledInSubject(student)) enrolledStudents.add(student);
@@ -52,7 +52,6 @@ class _AddMarkAndRecommendationState extends State<AddMarkAndRecommendation> {
                   itemBuilder: ((context, index) => AddMarkForm(
                         student: enrolledStudents[index],
                         subject: subject,
-                        recommendations: studentRecommendations,
                       ))),
             )
           ]),
