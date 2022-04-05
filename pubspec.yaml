@@ -43,6 +43,7 @@ dependencies:
   flutter_spinkit: ^5.1.0
   fluttertoast: ^8.0.9
   image_picker: ^0.8.4+11
+  multi_select_flutter: ^4.1.2
 
 dev_dependencies:
   flutter_test:

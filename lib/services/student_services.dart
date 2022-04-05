@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
@@ -7,11 +8,17 @@ class StudentServices {
   final CollectionReference studentCollection =
       FirebaseFirestore.instance.collection('students');
 
+  final String _currentStudentId = "AhChICKVgush7by3Glex";
+
   Student _studentFromDocSnapshot(QueryDocumentSnapshot doc) {
     return Student(
         uid: doc.reference.id,
         role: doc.data().toString().contains('role') ? doc.get('role') : '',
         name: doc.data().toString().contains('name') ? doc.get('name') : '',
+        email: doc.data().toString().contains('email') ? doc.get('email') : '',
+        password: doc.data().toString().contains('password')
+            ? doc.get('password')
+            : '',
         enrolledSubjects: doc.data().toString().contains('subjects')
             ? List<Subject>.from(doc.get('subjects').map((sub) {
                 return Subject(
@@ -26,8 +33,8 @@ class StudentServices {
               }))
             : <Results>[],
         average: doc.data().toString().contains('average')
-            ? doc.get('average')
-            : '');
+            ? double.parse(doc.get('average').toString())
+            : 0.0);
   }
 
   List<Student> _studentsFromSnapshot(QuerySnapshot snapshot) {
@@ -43,6 +50,13 @@ class StudentServices {
         .orderBy('average')
         .snapshots()
         .map(_studentsFromSnapshot);
+  }
+
+  Stream<Student> getSingleStudent() {
+    return studentCollection
+        .doc(_currentStudentId)
+        .snapshots()
+        .map(Student.fromDocumentSnapshot);
   }
 
   Future<dynamic> updateStudentMarks(String uid, Results result,
@@ -67,5 +81,30 @@ class StudentServices {
     return await studentCollection
         .doc(uid)
         .update({"subjects": FieldValue.arrayUnion(subjectToAdd)});
+  }
+
+  Future removeSubjectFromStudent(List<Subject> subjectList) async {
+    List<Map<String, dynamic>> listToUpdate = [];
+    for (var subject in subjectList) {
+      listToUpdate
+          .add({'subCode': subject.subCode, 'subject': subject.subject});
+    }
+    print(listToUpdate);
+    studentCollection
+        .doc(_currentStudentId)
+        .update({"subjects": listToUpdate}).then(
+            (value) => Fluttertoast.showToast(msg: "Unenrolled from course"));
+  }
+
+  Future<void> addUser(name, email, password) {
+    return studentCollection.add({
+      'name': name,
+      'average': 0.0,
+      'email': email,
+      'password': password,
+      'role': 'STU',
+      'results': [],
+      'subjects': []
+    });
   }
 }
