@@ -53,13 +53,13 @@ class _SignUpState extends State<SignUp> {
                           width: 100,
                           height: 100,
                           decoration: BoxDecoration(
-                              image: DecorationImage(
+                              image: const DecorationImage(
                                 image: AssetImage("assets/images/images.png"),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100)),
                         ),
-                        Positioned.fill(
+                        const Positioned.fill(
                           child: Align(
                               alignment: Alignment.bottomRight,
                               child: Icon(
