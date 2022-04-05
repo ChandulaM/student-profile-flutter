@@ -9,6 +9,8 @@ import 'package:student_profile/models/Subject.dart';
 import 'package:student_profile/models/Teacher.dart';
 import 'package:student_profile/routes.dart';
 import 'package:student_profile/screens/admin/admin_home.dart';
+import 'package:student_profile/screens/admin/student_list.dart';
+import 'package:student_profile/screens/admin/teacher_list.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/recomendation/recommendations_screen.dart';
@@ -21,6 +23,7 @@ import 'package:student_profile/services/recommendation_service.dart';
 import 'package:student_profile/services/student_services.dart';
 import 'package:student_profile/services/subject_service.dart';
 import 'package:student_profile/routes.dart' as router;
+import 'package:student_profile/services/teacher_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,6 +44,10 @@ class MyApp extends StatelessWidget {
           initialData: const [],
           value: StudentServices().getStudents(),
         ),
+        StreamProvider<List<Teacher>>.value(
+          initialData: const [],
+          value: TeacherService().getTeachers(),
+        ),
         StreamProvider<List<Subject>>.value(
           initialData: const [],
           value: SubjectServices().getAllSubjects(),
@@ -49,6 +56,10 @@ class MyApp extends StatelessWidget {
             value: RecommendationService().recommendations,
             initialData: const [],
         ),
+        StreamProvider<Student?>.value(
+          initialData: null,
+          value: StudentServices().getSingleStudent(),
+        )
       ],
       child: MaterialApp(
         title: 'Student Profile',

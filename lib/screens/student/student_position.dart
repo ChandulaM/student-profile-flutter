@@ -14,11 +14,11 @@ class StudentPosition extends StatefulWidget {
 class _StudentPositionState extends State<StudentPosition> {
   @override
   Widget build(BuildContext context) {
-    String currentStudent = "3CVWupNZ5zsf0EF2vfzp";
+    Student? currentStudent = Provider.of<Student?>(context);
     final students = Provider.of<List<Student>>(context);
     int noOfStudents = students.length;
-    int currentPostion =
-        students.indexWhere((student) => student.uid == currentStudent);
+    int currentPostion = noOfStudents -
+        students.indexWhere((student) => student.uid == currentStudent!.uid);
 
     return SafeArea(
       child: Padding(
@@ -41,7 +41,7 @@ class _StudentPositionState extends State<StudentPosition> {
                   borderRadius: BorderRadius.all(Radius.circular(10.0))),
               child: Center(
                 child: Text(
-                  'Your class ranking: ${currentPostion + 1}',
+                  'Your class ranking: $currentPostion',
                   style: const TextStyle(
                       color: Colors.white,
                       fontSize: 22,

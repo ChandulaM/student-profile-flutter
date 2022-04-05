@@ -66,7 +66,7 @@ class _AddMarkFormState extends State<AddMarkForm> {
     Student student = widget.student;
     String subCode = widget.subject.subCode;
 
-    double currentMark =
+    _subjectMark =
         student.results.firstWhere((result) => result.subject == subCode).mark;
 
 
@@ -94,14 +94,14 @@ class _AddMarkFormState extends State<AddMarkForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      initialValue: currentMark.toString(),
+                      initialValue: _subjectMark.toString(),
                       keyboardType: TextInputType.number,
                       decoration:
                           textFieldDecoration.copyWith(hintText: "Enter marks"),
                       validator: (val) => val!.isEmpty ? 'Enter mark' : null,
                       onChanged: (val) => setState(() {
                         _subjectMark =
-                            val.isNotEmpty ? double.parse(val) : currentMark;
+                            val.isNotEmpty ? double.parse(val) : _subjectMark;
                       }),
                     ),
                   ),
