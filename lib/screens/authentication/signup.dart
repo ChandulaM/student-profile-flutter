@@ -34,7 +34,7 @@ class _SignUpState extends State<SignUp> {
               child: Column(
                 children: [
                   const Text(
-                    "Create a new account",
+                    "Create a new accounts",
                     style: TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
