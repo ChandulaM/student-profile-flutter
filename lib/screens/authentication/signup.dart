@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
 
@@ -37,7 +38,41 @@ class _SignUpState extends State<SignUp> {
                     style: TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
-                    height: 30,
+                    height: 20,
+                  ),
+                  GestureDetector(
+                    onTap: () async {
+                      final ImagePicker _picker = ImagePicker();
+                      // Pick an image
+                      final XFile? image =
+                          await _picker.pickImage(source: ImageSource.gallery);
+                    },
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage("assets/images/images.png"),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(100)),
+                        ),
+                        Positioned.fill(
+                          child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(
+                                Icons.image_search,
+                                color: Colors.blue,
+                                size: 30.0,
+                              )),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
                   ),
                   const TextField(
                     decoration: InputDecoration(

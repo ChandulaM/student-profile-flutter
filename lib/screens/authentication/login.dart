@@ -62,14 +62,15 @@ class _LoginState extends State<Login> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                       Navigator.pushNamed(context, '/studentHome');
+                      Navigator.pushNamed(context, '/studentHome');
                     },
                     child: const Text('Login'),
                   ),
                   ElevatedButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
-                      }, child: const Text('Sign up')),
+                      },
+                      child: const Text('Sign up')),
                 ],
               ),
             ),
