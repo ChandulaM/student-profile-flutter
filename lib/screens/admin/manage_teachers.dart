@@ -99,12 +99,13 @@ class _ManageTeacherState extends State<ManageTeacher> {
           email: email,
           password: password,
           subjects: _selectedSubjects);
-      await TeacherService().addUser(teacher);
-      // .then((value) => showToast("Teacher registered successfully"))
-      // .catchError((err) => showToast("Something went wrong!"));
+      TeacherService()
+          .addUser(teacher)
+          .then((value) => showToast("Teacher registered successfully"))
+          .catchError((err) => showToast("Something went wrong!"));
     }
 
-    print(_selectedSubjects);
+    // print(_selectedSubjects);
 
     return Scaffold(
       body: SafeArea(

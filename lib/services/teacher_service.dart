@@ -47,12 +47,16 @@ class TeacherService {
   }
 
   Future addUser(Teacher teacher) async {
-    return await _teacherCollectionRef.add({
+    final teacherSubjects = teacher.subjects
+        .map((e) => {"subject": e.subject, "subCode": e.subCode})
+        .toList();
+    Map<String, dynamic> teacherToAdd = {
       'name': teacher.name,
       'email': teacher.email,
       'password': teacher.password,
       'role': teacher.role,
-      'subjects': teacher.subjects
-    });
+      'subjects': teacherSubjects
+    };
+    return await _teacherCollectionRef.add(teacherToAdd);
   }
 }
