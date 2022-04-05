@@ -1,5 +1,8 @@
+import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Teacher.dart';
+import 'package:student_profile/services/teacher_service.dart';
 
 class TeacherList extends StatefulWidget {
   const TeacherList({Key? key, required this.list}) : super(key: key);
@@ -29,6 +32,17 @@ class _TeacherListState extends State<TeacherList> {
               country.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color.fromARGB(255, 4, 208, 21),
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
@@ -100,7 +114,18 @@ class _TeacherListState extends State<TeacherList> {
                             Expanded(
                               flex: 1,
                               child: IconButton(
-                                onPressed: () => {},
+                                onPressed: () async {
+                                  if (await confirm(context)) {
+                                    TeacherService()
+                                        .deleteUser(filteredTeachers[index].uid)
+                                        .then((value) => showToast(
+                                            "Student removed successfully"))
+                                        .catchError((err) =>
+                                            showToast("Something went wrong!"));
+                                  } else {
+                                    return print('pressedCancel');
+                                  }
+                                },
                                 icon: const Icon(Icons.delete_forever_sharp),
                                 color: Colors.red,
                                 iconSize: 30,

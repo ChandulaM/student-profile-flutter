@@ -97,7 +97,9 @@ class StudentServices {
   }
 
   Future<void> addUser(name, email, password) {
-    return studentCollection.add({
+    String docId = studentCollection.doc().id;
+    return studentCollection.doc(docId).set({
+      'uid': docId,
       'name': name,
       'average': 0.0,
       'email': email,
@@ -106,5 +108,13 @@ class StudentServices {
       'results': [],
       'subjects': []
     });
+  }
+
+  Future<void> deleteUser(id) {
+    return studentCollection
+        .doc(id)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
   }
 }

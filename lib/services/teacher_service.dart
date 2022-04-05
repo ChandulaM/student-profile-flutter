@@ -47,16 +47,26 @@ class TeacherService {
   }
 
   Future addUser(Teacher teacher) async {
+    String docId = _teacherCollectionRef.doc().id;
     final teacherSubjects = teacher.subjects
         .map((e) => {"subject": e.subject, "subCode": e.subCode})
         .toList();
     Map<String, dynamic> teacherToAdd = {
+      'uid': docId,
       'name': teacher.name,
       'email': teacher.email,
       'password': teacher.password,
       'role': teacher.role,
       'subjects': teacherSubjects
     };
-    return await _teacherCollectionRef.add(teacherToAdd);
+    return await _teacherCollectionRef.doc(docId).set(teacherToAdd);
+  }
+
+  Future<void> deleteUser(id) {
+    return _teacherCollectionRef
+        .doc(id)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
   }
 }

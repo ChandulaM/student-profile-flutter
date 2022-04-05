@@ -70,16 +70,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
       passwordController.clear();
     }
 
-    // CollectionReference students =
-    //     FirebaseFirestore.instance.collection('students');
-
-    // Future<void> addUser() {
-    //   return students
-    //       .add({'name': name, 'email': email, 'password': password})
-    //       .then((value) => print('User Added'))
-    //       .catchError((error) => print('Failed to Add user: $error'));
-    // }
-
     void showToast(String message) {
       Fluttertoast.showToast(
           msg: message,
@@ -104,8 +94,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
           .then((value) => showToast("Teacher registered successfully"))
           .catchError((err) => showToast("Something went wrong!"));
     }
-
-    // print(_selectedSubjects);
 
     return Scaffold(
       body: SafeArea(
@@ -284,7 +272,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
-                              // Validate returns true if the form is valid, otherwise false.
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   name = nameController.text;

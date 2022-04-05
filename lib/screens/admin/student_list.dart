@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:student_profile/models/Student.dart';
+import 'package:confirm_dialog/confirm_dialog.dart';
+import 'package:student_profile/services/student_services.dart';
 
 class StudentList extends StatefulWidget {
   const StudentList({Key? key, required this.list}) : super(key: key);
@@ -30,6 +34,17 @@ class _StudentListState extends State<StudentList> {
               student.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color.fromARGB(255, 4, 208, 21),
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
@@ -103,7 +118,22 @@ class _StudentListState extends State<StudentList> {
                               Expanded(
                                 flex: 1,
                                 child: IconButton(
-                                  onPressed: () => {},
+                                  onPressed: () async {
+                                    if (await confirm(context)) {
+                                      StudentServices()
+                                          .deleteUser(
+                                              filteredStudents[index].uid)
+                                          .then((value) => showToast(
+                                              "Student removed successfully"))
+                                          .then((value) => setState(() =>
+                                              allStudents =
+                                                  Provider.of<List<Student>>(
+                                                      context)))
+                                          .catchError((err) => showToast(
+                                              "Something went wrong!"));
+                                    }
+                                    return print('pressedCancel');
+                                  },
                                   icon: const Icon(Icons.delete_forever_sharp),
                                   color: Colors.red,
                                   iconSize: 30,
