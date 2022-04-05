@@ -6,6 +6,7 @@ import 'package:student_profile/services/recommendation_service.dart';
 
 class RecommendationScreen extends StatefulWidget {
   static String routeName = "recommendations";
+
   const RecommendationScreen({Key? key}) : super(key: key);
 
   @override
@@ -16,7 +17,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
 
 
 
-  final Stream<List<Recommendation>> recommendations = RecommendationService().recommendations;
+  //final Stream<List<Recommendation>> recommendations = RecommendationService().recommendations;
 
 
   @override
@@ -30,17 +31,7 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   @override
   Widget build(BuildContext context) {
     return AppPageLayout(
-        body: StreamBuilder(
-          stream: recommendations,
-          builder: (BuildContext buildContext,  AsyncSnapshot<List<Recommendation>> snapshot) {
-            if(!snapshot.hasData) {
-              return const Center(child: Text("No data found"),);
-            }else {
-              return _buildRecommendationContainer(recommendations: snapshot!.data ?? []);
-            }
-
-          },
-        ),
+        body: Container(),
       onBackPress: () {
           Navigator.pop(context);
       },
@@ -48,12 +39,14 @@ class _RecommendationScreenState extends State<RecommendationScreen> {
   }
 
 
-
+/*
   Widget _buildRecommendationContainer({List<Recommendation>? recommendations}) => ListView.builder(
     itemCount: recommendations!.length,
     itemBuilder: (_, index) {
       return RecommendationItemWidget(recommendation: recommendations[index], onPress: () {});
     }
   );
+
+ */
 
 }

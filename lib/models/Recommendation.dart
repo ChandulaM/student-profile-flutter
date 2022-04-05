@@ -1,9 +1,10 @@
 class Recommendation {
-  String studentId;
+  String? studentId;
   String? message;
-  final List<Map<String, String>> recommendations;
+  String? id;
+  final List<Map<String, dynamic>> recommendations;
 
-  Recommendation({this.message, required this.studentId, required this.recommendations});
+  Recommendation({this.message, required this.studentId, required this.recommendations, this.id});
 
 
   /*
