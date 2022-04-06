@@ -2,6 +2,7 @@ import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Teacher.dart';
+import 'package:student_profile/screens/admin/update_teacher.dart';
 import 'package:student_profile/services/teacher_service.dart';
 
 class TeacherList extends StatefulWidget {
@@ -134,7 +135,14 @@ class _TeacherListState extends State<TeacherList> {
                             Expanded(
                               flex: 0,
                               child: IconButton(
-                                onPressed: () => {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const UpdateTeacher()),
+                                  );
+                                },
                                 icon: const Icon(Icons.edit_note_rounded),
                                 color: Colors.green,
                                 iconSize: 30,
