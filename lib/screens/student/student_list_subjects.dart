@@ -18,23 +18,23 @@ class ListAllSubjects extends StatefulWidget {
 }
 
 class _ListAllSubjectsState extends State<ListAllSubjects> {
-  void showToast(String message) {
+  void showToast(String message, bool isError) {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue[300],
+        backgroundColor: isError ? Colors.red : Colors.blue[300],
         textColor: Colors.white,
         fontSize: 16.0);
   }
 
   void enrollStudentInSubject(String studentId, Subject subject) async {
     StudentServices().updateStudentSubjects(studentId, subject).then((value) {
-      showToast("Enrolled in subject successfully");
-      StudentServices().updateStudentMarks(
+      showToast("Enrolled in subject successfully", false);
+      StudentServices().addNewStudentMarks(
           studentId, Results(subject: subject.subCode, mark: 0.0));
-    }).catchError((err) => showToast("Something went wrong!"));
+    }).catchError((error) => showToast("Something went wrong!", true));
   }
 
   void unenrollStudentFromSubject(

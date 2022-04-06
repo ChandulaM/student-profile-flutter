@@ -8,7 +8,7 @@ class StudentServices {
   final CollectionReference studentCollection =
       FirebaseFirestore.instance.collection('students');
 
-  final String _currentStudentId = "AhChICKVgush7by3Glex";
+  final String _currentStudentId = "19Xo7IuMwj3CLfH6BGoK";
 
   Student _studentFromDocSnapshot(QueryDocumentSnapshot doc) {
     return Student(
@@ -29,7 +29,7 @@ class StudentServices {
             ? List<Results>.from(doc.get('results').map((res) {
                 return Results(
                     subject: res['subject'],
-                    mark: double.parse(res['mark'].toString()));
+                    mark: double.parse(res['result'].toString()));
               }))
             : <Results>[],
         average: doc.data().toString().contains('average')
@@ -59,18 +59,28 @@ class StudentServices {
         .map(Student.fromDocumentSnapshot);
   }
 
-  Future<dynamic> updateStudentMarks(String uid, Results result,
-      {double? newAverage}) async {
+  Future<dynamic> updateStudentMarks(
+      String uid, List<Results> results, double newAverage) async {
+    List<Map<String, dynamic>> updatedResults = results
+        .map((result) =>
+            <String, dynamic>{"result": result.mark, "subject": result.subject})
+        .toList();
+
+    print(updatedResults);
+
+    return await studentCollection
+        .doc(uid)
+        .update({"average": newAverage, "results": updatedResults});
+  }
+
+  Future<dynamic> addNewStudentMarks(String uid, Results result) async {
     List<Map<String, dynamic>> updatedResult = [
       {"result": result.mark, "subject": result.subject}
     ];
 
-    return await studentCollection.doc(uid).update(newAverage == null
-        ? {"results": FieldValue.arrayUnion(updatedResult)}
-        : {
-            "average": newAverage,
-            "results": FieldValue.arrayUnion(updatedResult)
-          });
+    return await studentCollection
+        .doc(uid)
+        .update({"results": FieldValue.arrayUnion(updatedResult)});
   }
 
   Future updateStudentSubjects(String uid, Subject subject) async {
@@ -89,7 +99,6 @@ class StudentServices {
       listToUpdate
           .add({'subCode': subject.subCode, 'subject': subject.subject});
     }
-    print(listToUpdate);
     studentCollection
         .doc(_currentStudentId)
         .update({"subjects": listToUpdate}).then(
