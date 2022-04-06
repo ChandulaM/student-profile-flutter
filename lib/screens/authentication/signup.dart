@@ -1,6 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
@@ -18,6 +21,24 @@ class _SignUpState extends State<SignUp> {
   String password = "";
   UserTypes userType = UserTypes.STUDENT;
   bool isAccepted = false;
+  String _selectedType = 'male';
+  String _image = "assets/images/images.png";
+
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +69,10 @@ class _SignUpState extends State<SignUp> {
                       // Pick an image
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
+                          print(image!.path);
+                          setState(() {
+                            _image = image.path;
+                          });
                     },
                     child: Stack(
                       children: <Widget>[
@@ -55,8 +80,8 @@ class _SignUpState extends State<SignUp> {
                           width: 100,
                           height: 100,
                           decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage("assets/images/images.png"),
+                              image:  DecorationImage(
+                                image: AssetImage(_image),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100)),
@@ -95,22 +120,55 @@ class _SignUpState extends State<SignUp> {
                   const SizedBox(
                     height: 50,
                   ),
-                  Column(
-                    children: [
-                      RadioListTile(
-                        title: const Text("I am a student"),
-                        value: UserTypes,
-                        groupValue: UserTypes,
-                        onChanged: (v) {},
-                      ),
-                      RadioListTile(
-                        title: const Text("I am a Teacher"),
-                        value: UserTypes,
-                        groupValue: UserTypes,
-                        onChanged: (v) {},
-                      ),
-                    ],
-                  )
+                  // Column(
+                  //   children: [
+                  //     RadioListTile(
+                  //       title: const Text("I am a student"),
+                  //       value: UserTypes,
+                  //       groupValue: UserTypes,
+                  //       onChanged: (v) {},
+                  //     ),
+                  //     RadioListTile(
+                  //       title: const Text("I am a Teacher"),
+                  //       value: UserTypes,
+                  //       groupValue: UserTypes,
+                  //       onChanged: (v) {},
+                  //     ),
+                  //   ],
+                  // )
+                  Padding(
+          padding: const EdgeInsets.all(25),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Please choose your role:'),
+              ListTile(
+                leading: Radio<String>(
+                  value: 'student',
+                  groupValue: _selectedType,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedType = "student";
+                    });
+                  },
+                ),
+                title: const Text('I am a student'),
+              ),
+              ListTile(
+                leading: Radio<String>(
+                  value: 'teacher',
+                  groupValue: _selectedType,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedType = "teacher";
+                    });
+                  },
+                ),
+                title: const Text('I am a teacher'),
+              ),
+              const SizedBox(height: 25),
+            ],
+          )),
                 ],
               ),
             ),
@@ -132,7 +190,19 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ),
                 const SizedBox(
-                  height: 20,
+                  height: 10,
+                ),
+                _selectedType =="student"
+                    ? SignInButton(
+                        Buttons.Google,
+                        text: "Sign in with Google",
+                        onPressed: () async {
+                          await _handleSignIn();
+                        },
+                      )
+                    : SizedBox.shrink(),
+                const SizedBox(
+                  height: 10,
                 ),
                 ElevatedButton(
                   onPressed: () {},

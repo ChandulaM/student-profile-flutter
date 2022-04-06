@@ -15,10 +15,31 @@ class Login extends StatefulWidget {
   State<Login> createState() => _LoginState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login> with TickerProviderStateMixin {
   String email = "";
   String password = "";
   UserTypes userType = UserTypes.STUDENT;
+  bool isLoading = false;
+
+  late AnimationController controller;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 5),
+    )..addListener(() {
+        setState(() {});
+      });
+    controller.repeat(reverse: true);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
 
   bool validateEmail() {
     return false;
@@ -59,7 +80,6 @@ class _LoginState extends State<Login> {
           children: [
             Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
                     "Welcome to the Student Profiler",
@@ -87,18 +107,38 @@ class _LoginState extends State<Login> {
                   const SizedBox(
                     height: 50,
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/studentHome');
-                    },
-                    child: Text(
-                        'Login as a ${userType.toString().replaceFirst("UserTypes.", "")}'),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                              isLoading = true;
+                            });
+                            Future.delayed(Duration(seconds: 1), (){
+                              Navigator.pushNamed(context, '/studentHome');
+                            });
+                          
+                        },
+                        child: Text(
+                            'Login as a ${userType.toString().replaceFirst("UserTypes.", "")}'),
+                      ),
+                      ElevatedButton(
+                          onPressed: () {
+                           Navigator.pushNamed(context, '/signup');
+                          },
+                          child: const Text('Sign up')),
+                    ],
                   ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                      child: const Text('Sign up')),
+                  const SizedBox(
+                    height: 50,
+                  ),
+                  isLoading
+                      ? CircularProgressIndicator(
+                          value: controller.value,
+                          semanticsLabel: 'Linear progress indicator',
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             ),
