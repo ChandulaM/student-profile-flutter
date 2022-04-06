@@ -83,7 +83,7 @@ class _SignUpState extends State<SignUp> {
                                 image: AssetImage(_image),
                                 fit: BoxFit.cover,
                               ),
-                              borderRadius: BorderRadius.circular(100)),
+                              borderRadius: BorderRadius.circular(100),),
                         ),
                         const Positioned.fill(
                           child: Align(
