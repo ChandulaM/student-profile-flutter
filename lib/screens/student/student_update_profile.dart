@@ -1,30 +1,24 @@
-// ignore_for_file: constant_identifier_names
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
 
-class SignUp extends StatefulWidget {
-  const SignUp({Key? key}) : super(key: key);
-  static const String routeName = "/signup";
+class StudentProfileUpdate extends StatefulWidget {
+  const StudentProfileUpdate({Key? key}) : super(key: key);
+  static const String routeName = "/studentprofileupdate";
 
   @override
-  State<SignUp> createState() => _SignUpState();
+  _StudentProfileUpdateState createState() => _StudentProfileUpdateState();
 }
 
-class _SignUpState extends State<SignUp> {
-  String email = "";
-  String password = "";
-  UserTypes userType = UserTypes.STUDENT;
-  bool isAccepted = false;
-
+class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Sign Up'),
+        title: const Text('Update Profile'),
         centerTitle: true,
       ),
       body: Padding(
@@ -93,50 +87,35 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   const SizedBox(
-                    height: 50,
+                    height: 20,
                   ),
-                  Column(
-                    children: [
-                      RadioListTile(
-                        title: const Text("I am a student"),
-                        value: UserTypes,
-                        groupValue: UserTypes,
-                        onChanged: (v) {},
-                      ),
-                      RadioListTile(
-                        title: const Text("I am a Teacher"),
-                        value: UserTypes,
-                        groupValue: UserTypes,
-                        onChanged: (v) {},
-                      ),
-                    ],
-                  )
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Age',
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextField(
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Mobile Number',
+                    ),
+                  ),
                 ],
               ),
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(
-                  color: const Color.fromARGB(255, 194, 238, 240),
-                  alignment: Alignment.center,
-                  child: Row(
-                    children: [
-                      Checkbox(value: isAccepted, onChanged: (isSet) {
-                        setState(() {
-                          isAccepted = !isAccepted;
-                        });
-                      }),
-                      const Text("I Accept terms and conditions")
-                    ],
-                  ),
-                ),
                 const SizedBox(
                   height: 20,
                 ),
                 ElevatedButton(
                   onPressed: () {},
-                  child: const Text('Sign Up'),
+                  child: const Text('Update Profile'),
                 ),
                 const SizedBox(height: 10)
               ],

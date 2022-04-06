@@ -1,6 +1,9 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:flutter_signin_button/button_list.dart';
+import 'package:flutter_signin_button/button_view.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
 
@@ -17,9 +20,33 @@ class _LoginState extends State<Login> {
   String password = "";
   UserTypes userType = UserTypes.STUDENT;
 
+  bool validateEmail() {
+    return false;
+  }
+
+  bool validatePassword() {
+    return false;
+  }
+
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
+
+  Future<void> _handleSignIn() async {
+    try {
+      await _googleSignIn.signIn();
+    } catch (error) {
+      print(error);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Login'),
         centerTitle: true,
@@ -64,7 +91,8 @@ class _LoginState extends State<Login> {
                     onPressed: () {
                       Navigator.pushNamed(context, '/studentHome');
                     },
-                    child: const Text('Login'),
+                    child: Text(
+                        'Login as a ${userType.toString().replaceFirst("UserTypes.", "")}'),
                   ),
                   ElevatedButton(
                       onPressed: () {
@@ -77,8 +105,24 @@ class _LoginState extends State<Login> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                userType == UserTypes.STUDENT
+                    ? SignInButton(
+                        Buttons.Google,
+                        text: "Sign in with Google",
+                        onPressed: () async {
+                          await _handleSignIn();
+                        },
+                      )
+                    : SizedBox.shrink(),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Now you can login as a teacher"),
+                      ));
+                      userType = UserTypes.TEACHER;
+                    });
+                  },
                   child: const Text('Teacher Login'),
                   style: ButtonStyle(
                     foregroundColor:
@@ -88,7 +132,14 @@ class _LoginState extends State<Login> {
                   ),
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                        content: Text("Now you can login as an admin"),
+                      ));
+                      userType = UserTypes.ADMIN;
+                    });
+                  },
                   child: const Text('Admin Login'),
                   style: ButtonStyle(
                     foregroundColor:
@@ -97,7 +148,27 @@ class _LoginState extends State<Login> {
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
                 ),
-                const SizedBox(height: 10)
+                userType != UserTypes.STUDENT
+                    ? ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Now you can login as an student"),
+                            ));
+                            userType = UserTypes.STUDENT;
+                          });
+                        },
+                        child: const Text('Student Login'),
+                        style: ButtonStyle(
+                          foregroundColor:
+                              MaterialStateProperty.all<Color>(Colors.blue),
+                          backgroundColor:
+                              MaterialStateProperty.all<Color>(Colors.white),
+                        ),
+                      )
+                    : SizedBox.shrink(),
+                SizedBox(height: userType == UserTypes.STUDENT ? 10 : 0),
               ],
             ),
           ],

@@ -44,6 +44,9 @@ dependencies:
   fluttertoast: ^8.0.9
   image_picker: ^0.8.4+11
   multi_select_flutter: ^4.1.2
+  flutter_rating_bar: ^4.0.0
+  flutter_signin_button: ^2.0.0
+  google_sign_in: ^5.2.4
 
 dev_dependencies:
   flutter_test:
