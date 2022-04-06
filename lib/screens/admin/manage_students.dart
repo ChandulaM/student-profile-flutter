@@ -46,23 +46,6 @@ class _ManageStudentState extends State<ManageStudent> {
       passwordController.clear();
     }
 
-    // CollectionReference students =
-    //     FirebaseFirestore.instance.collection('students');
-
-    // Future<void> addUser() {
-    //   return students
-    //       .add({
-    //         'name': name,
-    //         'email': email,
-    //         'password': password,
-    //         'role': 'STU',
-    //         'results': [],
-    //         'subjects': []
-    //       })
-    //       .then((value) => print('User Added'))
-    //       .catchError((error) => print('Failed to Add user: $error'));
-    // }
-
     void showToast(String message) {
       Fluttertoast.showToast(
           msg: message,
@@ -78,7 +61,6 @@ class _ManageStudentState extends State<ManageStudent> {
       StudentServices().addUser(name, email, password).then((value) {
         showToast("Student registered successfully");
       }).catchError((err) => showToast("Something went wrong!"));
-      ;
     }
 
     return Scaffold(
