@@ -69,9 +69,8 @@ class _SignUpState extends State<SignUp> {
                       // Pick an image
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
-                          print(image!.path);
                           setState(() {
-                            _image = image.path;
+                            _image = image!.path;
                           });
                     },
                     child: Stack(
