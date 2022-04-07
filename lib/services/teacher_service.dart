@@ -55,4 +55,20 @@ class TeacherService {
       'subjects': teacher.subjects
     });
   }
+
+  Future loginAsTeacher(email,password) async {
+    await FirebaseFirestore.instance
+        .collection('teachers')
+        .where('email', isEqualTo: "jojo2@gmail.com")
+        .where('password', isEqualTo: "jojo123")
+        .get()
+        .then((value) async {
+          print(value.docs.map(_teacherFromSnapshot));
+          if(value.docs.map(_teacherFromSnapshot) == null){
+            return false;
+          }else{
+            return true;
+          }
+    });
+  }
 }

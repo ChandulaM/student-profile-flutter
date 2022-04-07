@@ -1,11 +1,12 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
-enum UserTypes { ADMIN, TEACHER, STUDENT }
+import 'package:student_profile/services/student_services.dart';
+import 'package:student_profile/services/teacher_service.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -18,7 +19,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> with TickerProviderStateMixin {
   String email = "";
   String password = "";
-  UserTypes userType = UserTypes.STUDENT;
+  String userType = "Student";
   bool isLoading = false;
 
   late AnimationController controller;
@@ -41,12 +42,15 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     super.dispose();
   }
 
-  bool validateEmail() {
-    return false;
+  bool validateEmail(email) {
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+        .hasMatch(email);
+    return emailValid;
   }
 
-  bool validatePassword() {
-    return false;
+  bool validatePassword(String password) {
+    return password.isNotEmpty;
   }
 
   GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -59,8 +63,9 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
   Future<void> _handleSignIn() async {
     try {
       await _googleSignIn.signIn();
+      Navigator.pushNamed(context, '/studentHome');
     } catch (error) {
-      print(error);
+      Navigator.pushNamed(context, '/studentHome');
     }
   }
 
@@ -88,21 +93,31 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   const SizedBox(
                     height: 30,
                   ),
-                  const TextField(
-                    decoration: InputDecoration(
+                  TextField(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Enter your name',
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        email = value;
+                      });
+                    },
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextField(
+                  TextField(
                     obscureText: true,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: OutlineInputBorder(),
                       hintText: 'Enter your password',
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        password = value;
+                      });
+                    },
                   ),
                   const SizedBox(
                     height: 50,
@@ -111,14 +126,58 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           setState(() {
-                              isLoading = true;
+                            isLoading = true;
+                          });
+                          if (!validateEmail(email)) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Please enter a valid email"),
+                            ));
+                            return;
+                          }
+                          if (!validatePassword(password)) {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(const SnackBar(
+                              content: Text("Password cannot be empty"),
+                            ));
+                            return;
+                          }
+
+                          Future.delayed(Duration(seconds: 2), () {
+                            userType == "student"
+                                ? Navigator.pushNamed(context, '/studentHome')
+                                : userType == "admin"
+                                    ? Navigator.pushNamed(context, '/adminHome')
+                                    : Navigator.pushNamed(
+                                        context, '/teacherHome');
+                            setState(() {
+                              isLoading = false;
                             });
-                            Future.delayed(Duration(seconds: 1), (){
+                          });
+
+                          if (userType == "student") {
+                            var result = await StudentServices()
+                                .loginAsStudent(email, password);
+                            if (result != null) {
                               Navigator.pushNamed(context, '/studentHome');
-                            });
-                          
+                            }
+                          } else if (userType == "teacher") {
+                            var result = await TeacherService()
+                                .loginAsTeacher(email, password);
+                            if (result != null) {
+                              Navigator.pushNamed(context, '/teacherHome');
+                            }
+                          } else if (userType == "admin") {
+                            if (email == "admin@gmail.com" &&
+                                password == "admin123") {
+                              Navigator.pushNamed(context, '/teacherHome');
+                            }
+                          }
+                          setState(() {
+                            isLoading = false;
+                          });
                         },
                         child: Text(
                             'Login as a ${userType.toString().replaceFirst("UserTypes.", "")}'),
@@ -145,7 +204,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                userType == UserTypes.STUDENT
+                userType == "student"
                     ? SignInButton(
                         Buttons.Google,
                         text: "Sign in with Google",
@@ -160,7 +219,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Now you can login as a teacher"),
                       ));
-                      userType = UserTypes.TEACHER;
+                      userType = "teacher";
                     });
                   },
                   child: const Text('Teacher Login'),
@@ -177,7 +236,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text("Now you can login as an admin"),
                       ));
-                      userType = UserTypes.ADMIN;
+                      userType = "admin";
                     });
                   },
                   child: const Text('Admin Login'),
@@ -188,7 +247,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         MaterialStateProperty.all<Color>(Colors.white),
                   ),
                 ),
-                userType != UserTypes.STUDENT
+                userType != "student"
                     ? ElevatedButton(
                         onPressed: () {
                           setState(() {
@@ -196,7 +255,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                                 .showSnackBar(const SnackBar(
                               content: Text("Now you can login as an student"),
                             ));
-                            userType = UserTypes.STUDENT;
+                            userType = "student";
                           });
                         },
                         child: const Text('Student Login'),
@@ -208,7 +267,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         ),
                       )
                     : SizedBox.shrink(),
-                SizedBox(height: userType == UserTypes.STUDENT ? 10 : 0),
+                SizedBox(height: userType == "student" ? 10 : 0),
               ],
             ),
           ],

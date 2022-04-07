@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
+import 'package:student_profile/models/Teacher.dart';
 
 class StudentServices {
   final CollectionReference studentCollection =
@@ -105,6 +106,33 @@ class StudentServices {
       'role': 'STU',
       'results': [],
       'subjects': []
+    });
+  }
+
+  Future loginAsStudent(email,password) async {
+    await FirebaseFirestore.instance
+        .collection('students')
+        .where('email', isEqualTo: "jojo2@gmail.com")
+        .where('password', isEqualTo: "jojo123")
+        .get()
+        .then((value) async {
+          print(value.docs.map(_studentFromDocSnapshot));
+          if(value.docs.map(_studentFromDocSnapshot) == null){
+            return false;
+          }else{
+            return true;
+          }
+    });
+  }
+
+  Future<void> signup(name, email, password, age, mobileNumber, role) {
+    return studentCollection.add({
+      'name': name,
+      'email': email,
+      'password': password,
+      'role': role,
+      'age': age,
+      'mobileNumber': mobileNumber
     });
   }
 }

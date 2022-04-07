@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'dart:async';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
 
@@ -12,8 +13,26 @@ class StudentProfile extends StatefulWidget {
 }
 
 class _StudentProfileState extends State<StudentProfile> {
+  String email = "shihara@gmail.com";
+  String name = "shihara";
+  String age = "25";
+  String mobileNumber = "0750935556";
+  String dp = "assets/images/images.png";
+
   @override
   Widget build(BuildContext context) {
+    Timer(
+        Duration(seconds: 20),
+        () => {
+              setState(() {
+                email = "shihara@gmailupdated.com";
+                name = "shihara updated";
+                age = "24";
+                mobileNumber = "0750935555";
+                dp = "assets/images/mydp.jpg";
+              })
+            });
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -28,8 +47,8 @@ class _StudentProfileState extends State<StudentProfile> {
             Center(
               child: Column(
                 children: [
-                  const Text(
-                    "Create a new accounts",
+                  Text(
+                    "$name's profile",
                     style: TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
@@ -48,8 +67,8 @@ class _StudentProfileState extends State<StudentProfile> {
                           width: 100,
                           height: 100,
                           decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage("assets/images/images.png"),
+                              image: DecorationImage(
+                                image: AssetImage(dp),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100)),
@@ -80,21 +99,21 @@ class _StudentProfileState extends State<StudentProfile> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
                     enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Name : Shihara Dilshan',
+                      hintText: 'Name :$name',
                     ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextField(
+                  TextField(
                     enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Email : shihara@gmail.com',
+                      hintText: 'Email : $email',
                     ),
                   ),
                   const SizedBox(
@@ -104,7 +123,7 @@ class _StudentProfileState extends State<StudentProfile> {
                     enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Age',
+                      hintText: 'Age : $age',
                     ),
                   ),
                   const SizedBox(
@@ -114,7 +133,7 @@ class _StudentProfileState extends State<StudentProfile> {
                     enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Mobile Number',
+                      hintText: 'Mobile Number : $mobileNumber',
                     ),
                   ),
                 ],

@@ -13,6 +13,11 @@ class StudentProfileUpdate extends StatefulWidget {
 }
 
 class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
+  String email = "shihara@gmail.com";
+  String name = "shihara";
+  String age = "25";
+  String mobileNumber = "0750935556";
+  String dp = "assets/images/images.png";
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,6 +47,9 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                       // Pick an image
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
+                      setState(() {
+                        dp = "assets/images/mydp.jpg";
+                      });
                     },
                     child: Stack(
                       children: <Widget>[
@@ -49,8 +57,8 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                           width: 100,
                           height: 100,
                           decoration: BoxDecoration(
-                              image: const DecorationImage(
-                                image: AssetImage("assets/images/images.png"),
+                              image: DecorationImage(
+                                image: AssetImage(dp),
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100)),
@@ -70,20 +78,19 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                   const SizedBox(
                     height: 20,
                   ),
-                  const TextField(
+                  TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Enter your name',
+                      hintText: name,
                     ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
-                  const TextField(
-                    obscureText: true,
+                  TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Enter your password',
+                      hintText: email,
                     ),
                   ),
                   const SizedBox(
@@ -92,7 +99,7 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                   TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Age',
+                      hintText: age,
                     ),
                   ),
                   const SizedBox(
@@ -101,7 +108,7 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                   TextField(
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Mobile Number',
+                      hintText: mobileNumber,
                     ),
                   ),
                 ],
@@ -114,7 +121,18 @@ class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
                   height: 20,
                 ),
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    setState(() {
+                      email = "shihara@gmailupdated.com";
+                      name = "shihara updated";
+                      age = "24";
+                      mobileNumber = "0750935555";
+                      dp = "assets/images/mydp.jpg";
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("profile updated succeddfully"),
+                    ));
+                  },
                   child: const Text('Update Profile'),
                 ),
                 const SizedBox(height: 10)
