@@ -46,7 +46,7 @@ class TeacherService {
     return _teacherCollectionRef.snapshots().map(_teachersFromSnapshot);
   }
 
-  Future addUser(Teacher teacher) async {
+  Future registerTeacher(Teacher teacher) async {
     String docId = _teacherCollectionRef.doc().id;
     final teacherSubjects = teacher.subjects
         .map((e) => {"subject": e.subject, "subCode": e.subCode})
@@ -68,5 +68,17 @@ class TeacherService {
         .delete()
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  Future<void> updateTeacher(Teacher teacher) async {
+    final teacherSubjects = teacher.subjects
+        .map((e) => {"subject": e.subject, "subCode": e.subCode})
+        .toList();
+    return await _teacherCollectionRef.doc(teacher.uid).update({
+      'name': teacher.name,
+      'email': teacher.email,
+      'password': teacher.password,
+      'subjects': teacherSubjects
+    });
   }
 }

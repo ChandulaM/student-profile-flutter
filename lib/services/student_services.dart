@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
+import 'package:student_profile/screens/admin/update_student.dart';
 
 class StudentServices {
   final CollectionReference studentCollection =
@@ -96,14 +97,14 @@ class StudentServices {
             (value) => Fluttertoast.showToast(msg: "Unenrolled from course"));
   }
 
-  Future<void> addUser(name, email, password) {
+  Future<void> registerStudent(Student student) {
     String docId = studentCollection.doc().id;
     return studentCollection.doc(docId).set({
       'uid': docId,
-      'name': name,
+      'name': student.name,
       'average': 0.0,
-      'email': email,
-      'password': password,
+      'email': student.email,
+      'password': student.password,
       'role': 'STU',
       'results': [],
       'subjects': []
@@ -116,5 +117,13 @@ class StudentServices {
         .delete()
         .then((value) => print("User Deleted"))
         .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  Future<void> updateStudent(Student student) async {
+    return await studentCollection.doc(student.uid).update({
+      'name': student.name,
+      'email': student.email,
+      'password': student.password,
+    });
   }
 }

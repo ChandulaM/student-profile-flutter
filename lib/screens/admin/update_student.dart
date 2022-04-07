@@ -8,8 +8,11 @@ import 'package:student_profile/screens/admin/student_list.dart';
 import 'package:student_profile/services/student_services.dart';
 
 class UpdateStudent extends StatefulWidget {
-  const UpdateStudent({Key? key}) : super(key: key);
-
+  const UpdateStudent({
+    Key? key,
+    required this.student,
+  }) : super(key: key);
+  final Student student;
   @override
   _UpdateStudentState createState() => _UpdateStudentState();
 }
@@ -19,6 +22,10 @@ class _UpdateStudentState extends State<UpdateStudent> {
   Widget build(BuildContext context) {
     final ButtonStyle style1 =
         ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
+
+    Student student = widget.student;
+
+    String id = student.uid;
 
     List<Student> allStudents = Provider.of<List<Student>>(context);
 
@@ -41,10 +48,18 @@ class _UpdateStudentState extends State<UpdateStudent> {
     }
 
     clearText() {
-      nameController.clear();
-      emailController.clear();
-      passwordController.clear();
+      nameController.text = student.name;
+      emailController.text = student.email;
+      passwordController.text = student.password;
     }
+
+    assignData() {
+      nameController.text = student.name;
+      emailController.text = student.email;
+      passwordController.text = student.password;
+    }
+
+    assignData();
 
     void showToast(String message) {
       Fluttertoast.showToast(
@@ -57,10 +72,20 @@ class _UpdateStudentState extends State<UpdateStudent> {
           fontSize: 16.0);
     }
 
-    Future<void> registerUser() async {
-      StudentServices().addUser(name, email, password).then((value) {
-        showToast("Student registered successfully");
-      }).catchError((err) => showToast("Something went wrong!"));
+    void updateStudent() async {
+      Student student = Student(
+          uid: id,
+          role: 'STU',
+          name: name,
+          email: email,
+          password: password,
+          enrolledSubjects: [],
+          average: 0,
+          results: []);
+      StudentServices()
+          .updateStudent(student)
+          .then((value) => showToast("Details updated successfully"))
+          .catchError((err) => showToast("Something went wrong!"));
     }
 
     return Scaffold(
@@ -191,13 +216,12 @@ class _UpdateStudentState extends State<UpdateStudent> {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  registerUser();
-                                  clearText();
+                                  updateStudent();
                                 });
                               }
                             },
                             child: const Text(
-                              'Register',
+                              'SAVE',
                               style: TextStyle(fontSize: 18.0),
                             ),
                           ),

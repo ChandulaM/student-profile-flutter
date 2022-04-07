@@ -10,7 +10,8 @@ import 'package:student_profile/screens/admin/teacher_list.dart';
 import 'package:student_profile/services/teacher_service.dart';
 
 class UpdateTeacher extends StatefulWidget {
-  const UpdateTeacher({Key? key}) : super(key: key);
+  const UpdateTeacher({Key? key, required this.teacher}) : super(key: key);
+  final Teacher teacher;
 
   @override
   _UpdateTeacherState createState() => _UpdateTeacherState();
@@ -44,7 +45,8 @@ class _UpdateTeacherState extends State<UpdateTeacher> {
       textStyle: const TextStyle(fontSize: 20),
     );
 
-    List<Teacher> allTeachers = Provider.of<List<Teacher>>(context);
+    Teacher teacher = widget.teacher;
+    String id = teacher.uid;
 
     final _formKey = GlobalKey<FormState>();
 
@@ -65,10 +67,18 @@ class _UpdateTeacherState extends State<UpdateTeacher> {
     }
 
     clearText() {
-      nameController.clear();
-      emailController.clear();
-      passwordController.clear();
+      nameController.text = teacher.name;
+      emailController.text = teacher.email;
+      passwordController.text = teacher.password;
     }
+
+    assignData() {
+      nameController.text = teacher.name;
+      emailController.text = teacher.email;
+      passwordController.text = teacher.password;
+    }
+
+    assignData();
 
     void showToast(String message) {
       Fluttertoast.showToast(
@@ -81,17 +91,17 @@ class _UpdateTeacherState extends State<UpdateTeacher> {
           fontSize: 16.0);
     }
 
-    void registerTeacher() async {
+    void updateTeacher() async {
       Teacher teacher = Teacher(
-          uid: 'uid',
+          uid: id,
           role: 'TEA',
           name: name,
           email: email,
           password: password,
           subjects: _selectedSubjects);
       TeacherService()
-          .addUser(teacher)
-          .then((value) => showToast("Teacher registered successfully"))
+          .updateTeacher(teacher)
+          .then((value) => showToast("Details updated successfully"))
           .catchError((err) => showToast("Something went wrong!"));
     }
 
@@ -257,8 +267,7 @@ class _UpdateTeacherState extends State<UpdateTeacher> {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  registerTeacher();
-                                  clearText();
+                                  updateTeacher();
                                 });
                               }
                             },

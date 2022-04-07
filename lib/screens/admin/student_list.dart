@@ -21,6 +21,12 @@ class _StudentListState extends State<StudentList> {
   late List<Student> filteredStudents;
   bool isSearching = false;
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   allStudents = Provider.of<List<Student>>(context);
+  // }
+
   @override
   void initState() {
     allStudents = widget.list;
@@ -126,10 +132,6 @@ class _StudentListState extends State<StudentList> {
                                               filteredStudents[index].uid)
                                           .then((value) => showToast(
                                               "Student removed successfully"))
-                                          .then((value) => setState(() =>
-                                              allStudents =
-                                                  Provider.of<List<Student>>(
-                                                      context)))
                                           .catchError((err) => showToast(
                                               "Something went wrong!"));
                                     }
@@ -147,8 +149,9 @@ class _StudentListState extends State<StudentList> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const UpdateStudent()),
+                                          builder: (context) => UpdateStudent(
+                                              student:
+                                                  filteredStudents[index])),
                                     );
                                   },
                                   icon: const Icon(Icons.edit_note_rounded),
