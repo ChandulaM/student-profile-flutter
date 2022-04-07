@@ -57,10 +57,20 @@ class _ManageStudentState extends State<ManageStudent> {
           fontSize: 16.0);
     }
 
-    Future<void> registerUser() async {
-      StudentServices().addUser(name, email, password).then((value) {
-        showToast("Student registered successfully");
-      }).catchError((err) => showToast("Something went wrong!"));
+    void registerStudent() async {
+      Student student = Student(
+          uid: '',
+          role: 'STU',
+          name: name,
+          email: email,
+          password: password,
+          enrolledSubjects: [],
+          average: 0,
+          results: []);
+      StudentServices()
+          .registerStudent(student)
+          .then((value) => showToast("Teacher registered successfully"))
+          .catchError((err) => showToast("Something went wrong!"));
     }
 
     return Scaffold(
@@ -109,7 +119,7 @@ class _ManageStudentState extends State<ManageStudent> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Registeration",
+                  "Registration",
                   style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                     fontSize: 25,
@@ -210,7 +220,7 @@ class _ManageStudentState extends State<ManageStudent> {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  registerUser();
+                                  registerStudent();
                                   clearText();
                                 });
                               }

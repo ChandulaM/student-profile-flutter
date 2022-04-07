@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:confirm_dialog/confirm_dialog.dart';
 import 'package:student_profile/screens/admin/update_student.dart';
@@ -98,10 +97,6 @@ class _StudentListState extends State<StudentList> {
                   itemCount: filteredStudents.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      // onTap: () {
-                      //   Navigator.of(context).pushNamed(Country.routeName,
-                      //       arguments: filteredStudents[index]);
-                      // },
                       child: Card(
                         elevation: 10,
                         child: Padding(
@@ -126,10 +121,6 @@ class _StudentListState extends State<StudentList> {
                                               filteredStudents[index].uid)
                                           .then((value) => showToast(
                                               "Student removed successfully"))
-                                          .then((value) => setState(() =>
-                                              allStudents =
-                                                  Provider.of<List<Student>>(
-                                                      context)))
                                           .catchError((err) => showToast(
                                               "Something went wrong!"));
                                     }
@@ -147,8 +138,9 @@ class _StudentListState extends State<StudentList> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              const UpdateStudent()),
+                                          builder: (context) => UpdateStudent(
+                                              student:
+                                                  filteredStudents[index])),
                                     );
                                   },
                                   icon: const Icon(Icons.edit_note_rounded),
@@ -163,7 +155,6 @@ class _StudentListState extends State<StudentList> {
                     );
                   })
               : const Center(
-                  //child: CircularProgressIndicator(),
                   child: Text(
                     "No such name registerd !",
                     style: TextStyle(fontSize: 20),

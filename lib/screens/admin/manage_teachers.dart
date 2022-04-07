@@ -16,14 +16,15 @@ class ManageTeacher extends StatefulWidget {
   _ManageTeacherState createState() => _ManageTeacherState();
 }
 
+final List<Subject> _subjects = [
+  Subject(subCode: 'MA10', subject: "Maths"),
+  Subject(subCode: 'SC10', subject: "Science"),
+  Subject(subCode: 'GEO11', subject: "Geography"),
+  Subject(subCode: 'HSCI10', subject: "Health Science"),
+  Subject(subCode: 'ENG11', subject: "English"),
+];
+
 class _ManageTeacherState extends State<ManageTeacher> {
-  static final List<Subject> _subjects = [
-    Subject(subCode: 'MA10', subject: "Maths"),
-    Subject(subCode: 'SC10', subject: "Science"),
-    Subject(subCode: 'GEO11', subject: "Geography"),
-    Subject(subCode: 'HSCI10', subject: "Helth Sciense"),
-    Subject(subCode: 'ENG11', subject: "English"),
-  ];
   final _items = _subjects
       .map((sub) => MultiSelectItem<Subject>(sub, sub.subject))
       .toList();
@@ -90,7 +91,7 @@ class _ManageTeacherState extends State<ManageTeacher> {
           password: password,
           subjects: _selectedSubjects);
       TeacherService()
-          .addUser(teacher)
+          .registerTeacher(teacher)
           .then((value) => showToast("Teacher registered successfully"))
           .catchError((err) => showToast("Something went wrong!"));
     }
@@ -142,7 +143,7 @@ class _ManageTeacherState extends State<ManageTeacher> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Registeration",
+                  "Registration",
                   style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                     fontSize: 25,
