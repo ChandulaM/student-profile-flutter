@@ -19,6 +19,40 @@ class _StudentProfileState extends State<StudentProfile> {
   String mobileNumber = "0750935556";
   String dp = "assets/images/images.png";
 
+  Future<void> _showMyDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('AlertDialog Title'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: const <Widget>[
+                Text('Are you sure want to logout?'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Yes'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                Navigator.pushNamed(context, '/login');
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Timer(
@@ -151,7 +185,13 @@ class _StudentProfileState extends State<StudentProfile> {
                   },
                   child: const Text('Update Profile'),
                 ),
-                const SizedBox(height: 10)
+                const SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    _showMyDialog();
+                  },
+                  child: const Text('Logout'),
+                ),
               ],
             ),
           ],

@@ -132,7 +132,8 @@ class StudentServices {
       'password': password,
       'role': role,
       'age': age,
-      'mobileNumber': mobileNumber
+      'mobileNumber': mobileNumber,
+      "image": "https://firebasestorage.googleapis.com/v0/b/bringmelk-93e0d.appspot.com/o/images.png?alt=media&token=e322fc19-8fc8-487f-9367-c5ef6191cfa6"
     });
   }
 }
