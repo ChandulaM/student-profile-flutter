@@ -49,7 +49,7 @@ class _StudentMarksState extends State<StudentMarks> {
                 navigateToNextScreen(currentSubject);
               },
               contentToDisplay:
-                  SubjectMarks(currentSubject, marks: currentResult.mark),
+              SubjectMarks(currentSubject, marks: currentResult.mark),
             );
           }),
     );
