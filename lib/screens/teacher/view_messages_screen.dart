@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:student_profile/common/app_colors.dart';
 import 'package:student_profile/common/app_page_layout.dart';
 import 'package:student_profile/common/text_styles.dart';
+import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/messages.dart';
 import 'package:student_profile/services/message_service.dart';
+import 'package:student_profile/services/recommendation_service.dart';
 
 class ViewMessagesScreen extends StatefulWidget {
 
-  final String studentId;
+  final String recommendationId;
 
   static const String routeName = "toTeacherViewMessageScreen";
 
-  const ViewMessagesScreen({Key? key, required this.studentId}) : super(key: key);
+  const ViewMessagesScreen({Key? key,required this.recommendationId}) : super(key: key);
 
   @override
   _ViewMessagesScreenState createState() => _ViewMessagesScreenState();
@@ -22,13 +24,22 @@ class _ViewMessagesScreenState extends State<ViewMessagesScreen> {
 
   late final Stream<List<Message>> _messageStream;
   final TextEditingController _editingController = TextEditingController();
+
+
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _messageStream = MessageService().getMessages(widget.studentId);
+    _messageStream = MessageService().getMessages(widget.recommendationId);
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _editingController.dispose();
   }
 
 
@@ -48,17 +59,18 @@ class _ViewMessagesScreenState extends State<ViewMessagesScreen> {
     );
   }
 
+
   Future _sendMessage() async {
 
     if(_formKey.currentState!.validate()) {
       Message message = Message(message: _editingController.text);
-      MessageService().addMessage(message: message, studentId: widget.studentId);
+      MessageService().addMessage(message: message, recId: widget.recommendationId);
     }
 
   }
 
   Future _deleteMessage({required String id}) async {
-    MessageService().deleteMessage(id: id, studentId: widget.studentId);
+    MessageService().deleteMessage(id: id, recId: widget.recommendationId);
   }
 
   Widget _buildMessageList() => StreamBuilder<List<Message>>(
@@ -134,5 +146,7 @@ class _ViewMessagesScreenState extends State<ViewMessagesScreen> {
       ),
     ),
   );
+
+
 
 }

@@ -141,4 +141,6 @@ class TextStyles {
       color: Colors.white, fontWeight: FontWeight.bold, fontSize: 36);
   static TextStyle regularRedTextStyle14pt = const TextStyle(
       fontSize: 14, fontWeight: FontWeight.normal, color: AppColors.red24);
+  static TextStyle regularGreenTextStyle14pt = const TextStyle(
+      fontSize: 14, fontWeight: FontWeight.normal, color: Colors.green);
 }

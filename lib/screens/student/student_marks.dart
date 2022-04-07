@@ -5,7 +5,6 @@ import 'package:student_profile/common/subject_item_card.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
-import 'package:student_profile/screens/student/view_recommendations.dart';
 import 'package:student_profile/screens/teacher/add_recommendation.dart';
 
 import 'marks_widget.dart';
@@ -25,8 +24,6 @@ class _StudentMarksState extends State<StudentMarks> {
   String _currentStudentUid = "SH9ueZknoZbhEhWK5dWR";
 
   void navigateToNextScreen(Subject subject) {
-    Navigator.of(context).pushNamed(ViewRecommendations.routeName,
-        arguments: {"subject": subject, "student": _currentStudentUid});
   }
 
   Subject _findSubject(List<Subject> subjects, String subCode) {

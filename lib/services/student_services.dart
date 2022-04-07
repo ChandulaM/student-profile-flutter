@@ -22,12 +22,11 @@ class StudentServices {
             ? List<Results>.from(doc.get('results').map((res) {
                 return Results(
                     subject: res['subject'],
-                    mark: double.parse(res['mark'].toString()));
+                    mark: double.parse(res['result'].toString()));
               }))
             : <Results>[],
-        average: doc.data().toString().contains('average')
-            ? doc.get('average')
-            : '');
+        average: double.parse(doc.get('average').toString())
+           );
   }
 
   List<Student> _studentsFromSnapshot(QuerySnapshot snapshot) {
@@ -68,4 +67,7 @@ class StudentServices {
         .doc(uid)
         .update({"subjects": FieldValue.arrayUnion(subjectToAdd)});
   }
+
+
+
 }

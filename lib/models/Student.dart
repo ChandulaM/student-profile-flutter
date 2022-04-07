@@ -5,7 +5,7 @@ import 'package:student_profile/models/user.dart';
 class Student extends User {
   final List<Subject> enrolledSubjects;
   final List<Results> results;
-  final int average;
+  final double average;
 
   Student(
       {required String uid,

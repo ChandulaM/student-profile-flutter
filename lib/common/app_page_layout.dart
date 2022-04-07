@@ -7,8 +7,9 @@ class AppPageLayout extends StatefulWidget {
   final VoidCallback? onBackPress;
   final VoidCallback? onDonePress;
   final String? title;
+  final FloatingActionButton? floatingActionButton;
 
-  const AppPageLayout({Key? key, required this.body, this.onBackPress, this.title, this.onDonePress}) : super(key: key);
+  const AppPageLayout({Key? key, required this.body, this.onBackPress, this.title, this.onDonePress, this.floatingActionButton}) : super(key: key);
 
   @override
   _AppPageLayoutState createState() => _AppPageLayoutState();
@@ -42,6 +43,7 @@ class _AppPageLayoutState extends State<AppPageLayout> {
           ],
           centerTitle: true,
         ),
+        floatingActionButton: widget.floatingActionButton
       ),
     );
   }
