@@ -21,28 +21,29 @@ class StudentMarks extends StatefulWidget {
 }
 
 class _StudentMarksState extends State<StudentMarks> {
-  String _currentStudentUid = "SH9ueZknoZbhEhWK5dWR";
-
   void navigateToNextScreen(Subject subject) {
+    Navigator.of(context).pushNamed(ViewRecommendations.routeName,
+        arguments: {"subject": subject, "student": widget.currentStudent.uid});
+
   }
 
-  Subject _findSubject(List<Subject> subjects, String subCode) {
-    return subjects.firstWhere((subject) => subject.subCode == subCode);
+  Results _findResult(List<Results> results, String subCode) {
+    return results.firstWhere((result) => result.subject == subCode);
   }
 
   @override
   Widget build(BuildContext context) {
     final currentStudent = widget.currentStudent;
-    final subjectList = widget.subjectList;
+    final subjectList = currentStudent.enrolledSubjects;
 
     return Container(
       margin: const EdgeInsets.only(top: 8.0),
       child: ListView.builder(
-          itemCount: currentStudent.results.length,
+          itemCount: subjectList.length,
           itemBuilder: (context, index) {
-            Results currentResult = currentStudent.results[index];
-            Subject currentSubject =
-            _findSubject(subjectList, currentResult.subject);
+            Subject currentSubject = subjectList[index];
+            Results currentResult =
+                _findResult(currentStudent.results, currentSubject.subCode);
             return ItemCard(
               onPressed: () {
                 navigateToNextScreen(currentSubject);

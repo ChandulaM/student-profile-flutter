@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
@@ -17,23 +18,29 @@ class ListAllSubjects extends StatefulWidget {
 }
 
 class _ListAllSubjectsState extends State<ListAllSubjects> {
-  void showToast(String message) {
+  void showToast(String message, bool isError) {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue[300],
+        backgroundColor: isError ? Colors.red : Colors.blue[300],
         textColor: Colors.white,
         fontSize: 16.0);
   }
 
   void enrollStudentInSubject(String studentId, Subject subject) async {
     StudentServices().updateStudentSubjects(studentId, subject).then((value) {
-      showToast("Enrolled in subject successfully");
-      StudentServices().updateStudentMarks(
+      showToast("Enrolled in subject successfully", false);
+      StudentServices().addNewStudentMarks(
           studentId, Results(subject: subject.subCode, mark: 0.0));
-    }).catchError((err) => showToast("Something went wrong!"));
+    }).catchError((error) => showToast("Something went wrong!", true));
+  }
+
+  void unenrollStudentFromSubject(
+      List<Subject> currentSubjects, Subject subject) async {
+    currentSubjects.removeWhere((sub) => sub.subCode == subject.subCode);
+    await StudentServices().removeSubjectFromStudent(currentSubjects);
   }
 
   @override
@@ -53,8 +60,12 @@ class _ListAllSubjectsState extends State<ListAllSubjects> {
     return ListView.builder(
         itemCount: allSubjects.length,
         itemBuilder: (context, index) => SubjectListItem(
-            callback: () {
+            enrollCallback: () {
               enrollStudentInSubject(currentStudent.uid, allSubjects[index]);
+            },
+            unenrollCallback: () {
+              unenrollStudentFromSubject(
+                  currentStudent.enrolledSubjects, allSubjects[index]);
             },
             subject: allSubjects[index],
             showButton: !hasStudentEnrolled(allSubjects[index])));
@@ -64,12 +75,14 @@ class _ListAllSubjectsState extends State<ListAllSubjects> {
 class SubjectListItem extends StatelessWidget {
   final Subject subject;
   final bool showButton;
-  final Function callback;
+  final Function enrollCallback;
+  final Function unenrollCallback;
   const SubjectListItem(
       {Key? key,
       required this.subject,
       required this.showButton,
-      required this.callback})
+      required this.enrollCallback,
+      required this.unenrollCallback})
       : super(key: key);
 
   @override
@@ -104,21 +117,56 @@ class SubjectListItem extends StatelessWidget {
             showButton
                 ? ElevatedButton(
                     onPressed: () {
-                      callback();
+                      enrollCallback();
                     },
                     child: const Text('ENROLL',
                         style: TextStyle(letterSpacing: 0.5)),
                   )
-                : Text(
-                    'Already enrolled',
-                    style: TextStyle(
-                      color: Colors.grey[500],
-                      fontSize: 14.0,
-                    ),
+                : ElevatedButton(
+                    onPressed: () {
+                      showAlertDialogBox(context);
+                    },
+                    style: ElevatedButton.styleFrom(primary: Colors.grey),
+                    child: const Text('UNENROLL',
+                        style: TextStyle(letterSpacing: 0.5)),
                   )
           ],
         ),
       ),
+    );
+  }
+
+  showAlertDialogBox(BuildContext context) {
+    Widget cancelButton = TextButton(
+      child: const Text("Cancel"),
+      onPressed: () {
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+    Widget continueButton = TextButton(
+      child: const Text("Confirm"),
+      onPressed: () async {
+        await unenrollCallback();
+        Navigator.of(context, rootNavigator: true).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: const Text("Unenroll from course"),
+      content: const Text(
+          "Are you sure you want to unenroll from the selected course?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
     );
   }
 }

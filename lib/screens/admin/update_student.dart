@@ -3,49 +3,31 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:student_profile/common/header.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
-import 'package:student_profile/models/Subject.dart';
-import 'package:student_profile/models/Teacher.dart';
-import 'package:student_profile/screens/admin/teacher_list.dart';
-import 'package:student_profile/services/teacher_service.dart';
+import 'package:student_profile/models/Student.dart';
+import 'package:student_profile/screens/admin/student_list.dart';
+import 'package:student_profile/services/student_services.dart';
 
-class ManageTeacher extends StatefulWidget {
-  const ManageTeacher({Key? key}) : super(key: key);
-
+class UpdateStudent extends StatefulWidget {
+  const UpdateStudent({
+    Key? key,
+    required this.student,
+  }) : super(key: key);
+  final Student student;
   @override
-  _ManageTeacherState createState() => _ManageTeacherState();
+  _UpdateStudentState createState() => _UpdateStudentState();
 }
 
-final List<Subject> _subjects = [
-  Subject(subCode: 'MA10', subject: "Maths"),
-  Subject(subCode: 'SC10', subject: "Science"),
-  Subject(subCode: 'GEO11', subject: "Geography"),
-  Subject(subCode: 'HSCI10', subject: "Health Science"),
-  Subject(subCode: 'ENG11', subject: "English"),
-];
-
-class _ManageTeacherState extends State<ManageTeacher> {
-  final _items = _subjects
-      .map((sub) => MultiSelectItem<Subject>(sub, sub.subject))
-      .toList();
-
-  late List<Subject> _selectedSubjects;
-
-  final _multiSelectKey = GlobalKey<FormFieldState>();
-
-  @override
-  void initState() {
-    // _selectedSubjects = _subjects;
-    super.initState();
-  }
-
+class _UpdateStudentState extends State<UpdateStudent> {
   @override
   Widget build(BuildContext context) {
-    final ButtonStyle style1 = ElevatedButton.styleFrom(
-      textStyle: const TextStyle(fontSize: 20),
-    );
+    final ButtonStyle style1 =
+        ElevatedButton.styleFrom(textStyle: const TextStyle(fontSize: 20));
 
-    List<Teacher> allTeachers = Provider.of<List<Teacher>>(context);
+    Student student = widget.student;
+
+    String id = student.uid;
+
+    List<Student> allStudents = Provider.of<List<Student>>(context);
 
     final _formKey = GlobalKey<FormState>();
 
@@ -66,10 +48,18 @@ class _ManageTeacherState extends State<ManageTeacher> {
     }
 
     clearText() {
-      nameController.clear();
-      emailController.clear();
-      passwordController.clear();
+      nameController.text = student.name;
+      emailController.text = student.email;
+      passwordController.text = student.password;
     }
+
+    assignData() {
+      nameController.text = student.name;
+      emailController.text = student.email;
+      passwordController.text = student.password;
+    }
+
+    assignData();
 
     void showToast(String message) {
       Fluttertoast.showToast(
@@ -82,21 +72,27 @@ class _ManageTeacherState extends State<ManageTeacher> {
           fontSize: 16.0);
     }
 
-    void registerTeacher() async {
-      Teacher teacher = Teacher(
-          uid: 'uid',
-          role: 'TEA',
+    void updateStudent() async {
+      Student student = Student(
+          uid: id,
+          role: 'STU',
           name: name,
           email: email,
           password: password,
-          subjects: _selectedSubjects);
-      TeacherService()
-          .registerTeacher(teacher)
-          .then((value) => showToast("Teacher registered successfully"))
+          enrolledSubjects: [],
+          average: 0,
+          results: []);
+      StudentServices()
+          .updateStudent(student)
+          .then((value) => showToast("Details updated successfully"))
           .catchError((err) => showToast("Something went wrong!"));
     }
 
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text('Update Student Details'),
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -108,9 +104,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Header(
-                          title: "Manage Teachers",
-                        ),
                         SizedBox(
                           height: 12.0,
                         ),
@@ -119,31 +112,10 @@ class _ManageTeacherState extends State<ManageTeacher> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ElevatedButton(
-                    style: style1,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TeacherList(
-                                  list: allTeachers,
-                                )),
-                      );
-                    },
-                    child: const Text('View Registered List'),
-                  ),
-                ),
-              ],
-            ),
-            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Registration",
+                  "Update Form",
                   style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                     fontSize: 25,
@@ -225,40 +197,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
                           },
                         ),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 4),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            border: Border.all(
-                                color:
-                                    const Color.fromARGB(255, 122, 121, 121))),
-                        margin: const EdgeInsets.symmetric(vertical: 10.0),
-                        child: MultiSelectDialogField(
-                          items: _items,
-                          title: const Text("Subjects"),
-                          selectedColor: Colors.blue,
-                          validator: (values) {
-                            if (values == null || values.isEmpty) {
-                              return "Required";
-                            }
-                            return null;
-                          },
-                          buttonIcon: const Icon(
-                            Icons.arrow_drop_down_circle,
-                            color: Colors.blue,
-                          ),
-                          buttonText: const Text(
-                            "Subjects",
-                            style: TextStyle(
-                              fontSize: 20,
-                            ),
-                          ),
-                          onConfirm: (List<Subject> results) {
-                            _selectedSubjects = results;
-                          },
-                        ),
-                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
@@ -272,19 +210,18 @@ class _ManageTeacherState extends State<ManageTeacher> {
                                 primary: Colors.blueGrey),
                           ),
                           ElevatedButton(
-                            onPressed: () async {
+                            onPressed: () {
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  registerTeacher();
-                                  clearText();
+                                  updateStudent();
                                 });
                               }
                             },
                             child: const Text(
-                              'Register',
+                              'SAVE',
                               style: TextStyle(fontSize: 18.0),
                             ),
                           ),

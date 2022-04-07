@@ -9,8 +9,11 @@ class Teacher extends User {
       {required String uid,
       required String role,
       required String name,
+      required String email,
+      required String password,
       required this.subjects})
-      : super(uid: uid, role: role, name: name);
+      : super(
+            uid: uid, role: role, name: name, email: email, password: password);
 
   @override
   String toString() {

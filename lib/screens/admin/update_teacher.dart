@@ -9,22 +9,22 @@ import 'package:student_profile/models/Teacher.dart';
 import 'package:student_profile/screens/admin/teacher_list.dart';
 import 'package:student_profile/services/teacher_service.dart';
 
-class ManageTeacher extends StatefulWidget {
-  const ManageTeacher({Key? key}) : super(key: key);
+class UpdateTeacher extends StatefulWidget {
+  const UpdateTeacher({Key? key, required this.teacher}) : super(key: key);
+  final Teacher teacher;
 
   @override
-  _ManageTeacherState createState() => _ManageTeacherState();
+  _UpdateTeacherState createState() => _UpdateTeacherState();
 }
 
-final List<Subject> _subjects = [
-  Subject(subCode: 'MA10', subject: "Maths"),
-  Subject(subCode: 'SC10', subject: "Science"),
-  Subject(subCode: 'GEO11', subject: "Geography"),
-  Subject(subCode: 'HSCI10', subject: "Health Science"),
-  Subject(subCode: 'ENG11', subject: "English"),
-];
-
-class _ManageTeacherState extends State<ManageTeacher> {
+class _UpdateTeacherState extends State<UpdateTeacher> {
+  static final List<Subject> _subjects = [
+    Subject(subCode: 'MA10', subject: "Maths"),
+    Subject(subCode: 'SC10', subject: "Science"),
+    Subject(subCode: 'GEO11', subject: "Geography"),
+    Subject(subCode: 'HSCI10', subject: "Helth Sciense"),
+    Subject(subCode: 'ENG11', subject: "English"),
+  ];
   final _items = _subjects
       .map((sub) => MultiSelectItem<Subject>(sub, sub.subject))
       .toList();
@@ -45,7 +45,8 @@ class _ManageTeacherState extends State<ManageTeacher> {
       textStyle: const TextStyle(fontSize: 20),
     );
 
-    List<Teacher> allTeachers = Provider.of<List<Teacher>>(context);
+    Teacher teacher = widget.teacher;
+    String id = teacher.uid;
 
     final _formKey = GlobalKey<FormState>();
 
@@ -66,10 +67,18 @@ class _ManageTeacherState extends State<ManageTeacher> {
     }
 
     clearText() {
-      nameController.clear();
-      emailController.clear();
-      passwordController.clear();
+      nameController.text = teacher.name;
+      emailController.text = teacher.email;
+      passwordController.text = teacher.password;
     }
+
+    assignData() {
+      nameController.text = teacher.name;
+      emailController.text = teacher.email;
+      passwordController.text = teacher.password;
+    }
+
+    assignData();
 
     void showToast(String message) {
       Fluttertoast.showToast(
@@ -82,21 +91,25 @@ class _ManageTeacherState extends State<ManageTeacher> {
           fontSize: 16.0);
     }
 
-    void registerTeacher() async {
+    void updateTeacher() async {
       Teacher teacher = Teacher(
-          uid: 'uid',
+          uid: id,
           role: 'TEA',
           name: name,
           email: email,
           password: password,
           subjects: _selectedSubjects);
       TeacherService()
-          .registerTeacher(teacher)
-          .then((value) => showToast("Teacher registered successfully"))
+          .updateTeacher(teacher)
+          .then((value) => showToast("Details updated successfully"))
           .catchError((err) => showToast("Something went wrong!"));
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Update Teacher Details'),
+        backgroundColor: Colors.blue,
+      ),
       body: SafeArea(
         child: Column(
           children: [
@@ -108,9 +121,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: const [
-                        Header(
-                          title: "Manage Teachers",
-                        ),
                         SizedBox(
                           height: 12.0,
                         ),
@@ -119,31 +129,10 @@ class _ManageTeacherState extends State<ManageTeacher> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: ElevatedButton(
-                    style: style1,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => TeacherList(
-                                  list: allTeachers,
-                                )),
-                      );
-                    },
-                    child: const Text('View Registered List'),
-                  ),
-                ),
-              ],
-            ),
-            Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Registration",
+                  "Update Form",
                   style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                     fontSize: 25,
@@ -278,13 +267,12 @@ class _ManageTeacherState extends State<ManageTeacher> {
                                   name = nameController.text;
                                   email = emailController.text;
                                   password = passwordController.text;
-                                  registerTeacher();
-                                  clearText();
+                                  updateTeacher();
                                 });
                               }
                             },
                             child: const Text(
-                              'Register',
+                              'Save',
                               style: TextStyle(fontSize: 18.0),
                             ),
                           ),
