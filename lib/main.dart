@@ -13,6 +13,10 @@ import 'package:student_profile/screens/admin/student_list.dart';
 import 'package:student_profile/screens/admin/teacher_list.dart';
 import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
+import 'package:student_profile/screens/authentication/signup.dart';
+import 'package:student_profile/screens/student/student_home.dart';
+import 'package:student_profile/screens/student/student_update_profile.dart';
+import 'package:student_profile/screens/student/view_recommendations.dart';
 import 'package:student_profile/screens/recomendation/recommendations_screen.dart';
 import 'package:student_profile/screens/student/student_home.dart';
 import 'package:student_profile/screens/teacher/add_recommendation.dart';
@@ -34,7 +38,6 @@ Future<void> main() async {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -64,14 +67,19 @@ class MyApp extends StatelessWidget {
         title: 'Student Profile',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue, fontFamily: 'Roboto'),
-        initialRoute: Authenticate.routeName,
+        initialRoute: Login.routeName,
         routes: {
-          Authenticate.routeName: (context) => const Authenticate(),
+          Login.routeName: (context) => const Login(),
+          SignUp.routeName: (context) => const SignUp(),
           AdminHome.routeName: (context) => const AdminHome(),
           StudentHome.routeName: (context) => const StudentHome(),
           TeacherHome.routeName: (context) => const TeacherHome(),
           AddMarkAndRecommendation.routeName: (context) =>
               const AddMarkAndRecommendation(),
+          ViewRecommendations.routeName: (context) =>
+              const ViewRecommendations(),
+          StudentProfileUpdate.routeName: (context) => const StudentProfileUpdate(),
+
           RecommendationScreen.routeName: (context) => const RecommendationScreen(),
         },
         onGenerateRoute: router.Router.generateRoute,

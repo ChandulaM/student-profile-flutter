@@ -3,7 +3,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
+<<<<<<< HEAD
+import 'package:student_profile/models/Teacher.dart';
+=======
 import 'package:student_profile/screens/admin/update_student.dart';
+>>>>>>> 2c11894ead14fd64700596651e1b64b74eeb8419
 
 class StudentServices {
   final CollectionReference studentCollection =
@@ -121,6 +125,33 @@ class StudentServices {
     });
   }
 
+<<<<<<< HEAD
+  Future loginAsStudent(email,password) async {
+    await FirebaseFirestore.instance
+        .collection('students')
+        .where('email', isEqualTo: "jojo2@gmail.com")
+        .where('password', isEqualTo: "jojo123")
+        .get()
+        .then((value) async {
+          print(value.docs.map(_studentFromDocSnapshot));
+          if(value.docs.map(_studentFromDocSnapshot) == null){
+            return false;
+          }else{
+            return true;
+          }
+    });
+  }
+
+  Future<void> signup(name, email, password, age, mobileNumber, role) {
+    return studentCollection.add({
+      'name': name,
+      'email': email,
+      'password': password,
+      'role': role,
+      'age': age,
+      'mobileNumber': mobileNumber,
+      "image": "https://firebasestorage.googleapis.com/v0/b/bringmelk-93e0d.appspot.com/o/images.png?alt=media&token=e322fc19-8fc8-487f-9367-c5ef6191cfa6"
+=======
   Future<void> deleteUser(id) {
     return studentCollection
         .doc(id)
@@ -134,6 +165,7 @@ class StudentServices {
       'name': student.name,
       'email': student.email,
       'password': student.password,
+>>>>>>> 2c11894ead14fd64700596651e1b64b74eeb8419
     });
   }
 }

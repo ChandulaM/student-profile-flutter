@@ -1,76 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'dart:async';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 enum UserTypes { ADMIN, TEACHER, STUDENT }
 
-class StudentProfile extends StatefulWidget {
-  const StudentProfile({Key? key}) : super(key: key);
+class StudentProfileUpdate extends StatefulWidget {
+  const StudentProfileUpdate({Key? key}) : super(key: key);
+  static const String routeName = "/studentprofileupdate";
 
   @override
-  _StudentProfileState createState() => _StudentProfileState();
+  _StudentProfileUpdateState createState() => _StudentProfileUpdateState();
 }
 
-class _StudentProfileState extends State<StudentProfile> {
+class _StudentProfileUpdateState extends State<StudentProfileUpdate> {
   String email = "shihara@gmail.com";
   String name = "shihara";
   String age = "25";
   String mobileNumber = "0750935556";
   String dp = "assets/images/images.png";
-
-  Future<void> _showMyDialog() async {
-    return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('AlertDialog Title'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: const <Widget>[
-                Text('Are you sure want to logout?'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Yes'),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.pushNamed(context, '/login');
-              },
-            ),
-            TextButton(
-              child: const Text('No'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    Timer(
-        Duration(seconds: 20),
-        () => {
-              setState(() {
-                email = "shihara@gmailupdated.com";
-                name = "shihara updated";
-                age = "24";
-                mobileNumber = "0750935555";
-                dp = "assets/images/mydp.jpg";
-              })
-            });
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: const Text('Update Profile'),
         centerTitle: true,
       ),
       body: Padding(
@@ -81,8 +34,8 @@ class _StudentProfileState extends State<StudentProfile> {
             Center(
               child: Column(
                 children: [
-                  Text(
-                    "$name's profile",
+                  const Text(
+                    "Create a new accounts",
                     style: TextStyle(fontSize: 20),
                   ),
                   const SizedBox(
@@ -94,6 +47,9 @@ class _StudentProfileState extends State<StudentProfile> {
                       // Pick an image
                       final XFile? image =
                           await _picker.pickImage(source: ImageSource.gallery);
+                      setState(() {
+                        dp = "assets/images/mydp.jpg";
+                      });
                     },
                     child: Stack(
                       children: <Widget>[
@@ -106,68 +62,53 @@ class _StudentProfileState extends State<StudentProfile> {
                                 fit: BoxFit.cover,
                               ),
                               borderRadius: BorderRadius.circular(100)),
-                        )
+                        ),
+                        const Positioned.fill(
+                          child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Icon(
+                                Icons.image_search,
+                                color: Colors.blue,
+                                size: 30.0,
+                              )),
+                        ),
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text("Class Ranking(3)"),
-                  RatingBar.builder(
-                    initialRating: 3,
-                    minRating: 1,
-                    ignoreGestures: true,
-                    direction: Axis.horizontal,
-                    allowHalfRating: true,
-                    itemCount: 5,
-                    itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-                    itemBuilder: (context, _) => Icon(
-                      Icons.star,
-                      color: Colors.amber,
-                    ),
-                    onRatingUpdate: (rating) {
-                      print(rating);
-                    },
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   TextField(
-                    enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Name :$name',
+                      hintText: name,
                     ),
                   ),
                   const SizedBox(
                     height: 15,
                   ),
                   TextField(
-                    enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Email : $email',
+                      hintText: email,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   TextField(
-                    enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Age : $age',
+                      hintText: age,
                     ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
                   TextField(
-                    enabled: false,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(),
-                      hintText: 'Mobile Number : $mobileNumber',
+                      hintText: mobileNumber,
                     ),
                   ),
                 ],
@@ -181,17 +122,20 @@ class _StudentProfileState extends State<StudentProfile> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.pushNamed(context, '/studentprofileupdate');
+                    setState(() {
+                      email = "shihara@gmailupdated.com";
+                      name = "shihara updated";
+                      age = "24";
+                      mobileNumber = "0750935555";
+                      dp = "assets/images/mydp.jpg";
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text("profile updated succeddfully"),
+                    ));
                   },
                   child: const Text('Update Profile'),
                 ),
-                const SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    _showMyDialog();
-                  },
-                  child: const Text('Logout'),
-                ),
+                const SizedBox(height: 10)
               ],
             ),
           ],
