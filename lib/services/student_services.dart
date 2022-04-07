@@ -33,6 +33,7 @@ class StudentServices {
                     mark: double.parse(res['result'].toString()));
               }))
             : <Results>[],
+
         average: doc.data().toString().contains('average')
             ? double.parse(doc.get('average').toString())
             : 0.0);

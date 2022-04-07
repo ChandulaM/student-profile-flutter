@@ -43,7 +43,7 @@ class RecommendationItemWidget extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(recommendation.message ?? "", style: TextStyles.regularGreyTextStyle14pt,),
+                              Text(recommendation.comment ?? "", style: TextStyles.regularGreyTextStyle14pt,),
                               const SizedBox(height: 5),
                             ],
                           ),

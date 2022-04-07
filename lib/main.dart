@@ -15,7 +15,6 @@ import 'package:student_profile/screens/authentication/authenticate.dart';
 import 'package:student_profile/screens/authentication/login.dart';
 import 'package:student_profile/screens/recomendation/recommendations_screen.dart';
 import 'package:student_profile/screens/student/student_home.dart';
-import 'package:student_profile/screens/student/view_recommendations.dart';
 import 'package:student_profile/screens/teacher/add_recommendation.dart';
 import 'package:student_profile/screens/teacher/recommendation_screen.dart';
 import 'package:student_profile/screens/teacher/teacher_home.dart';
@@ -74,8 +73,6 @@ class MyApp extends StatelessWidget {
           AddMarkAndRecommendation.routeName: (context) =>
               const AddMarkAndRecommendation(),
           RecommendationScreen.routeName: (context) => const RecommendationScreen(),
-          ViewRecommendations.routeName: (context) =>
-              const ViewRecommendations(),
         },
         onGenerateRoute: router.Router.generateRoute,
       ),
