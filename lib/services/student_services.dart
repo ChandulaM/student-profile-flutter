@@ -3,13 +3,17 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
+<<<<<<< HEAD
 import 'package:student_profile/models/Teacher.dart';
+=======
+import 'package:student_profile/screens/admin/update_student.dart';
+>>>>>>> 2c11894ead14fd64700596651e1b64b74eeb8419
 
 class StudentServices {
   final CollectionReference studentCollection =
       FirebaseFirestore.instance.collection('students');
 
-  final String _currentStudentId = "AhChICKVgush7by3Glex";
+  final String _currentStudentId = "19Xo7IuMwj3CLfH6BGoK";
 
   Student _studentFromDocSnapshot(QueryDocumentSnapshot doc) {
     return Student(
@@ -33,6 +37,7 @@ class StudentServices {
                     mark: double.parse(res['result'].toString()));
               }))
             : <Results>[],
+
         average: doc.data().toString().contains('average')
             ? double.parse(doc.get('average').toString())
             : 0.0);
@@ -60,18 +65,28 @@ class StudentServices {
         .map(Student.fromDocumentSnapshot);
   }
 
-  Future<dynamic> updateStudentMarks(String uid, Results result,
-      {double? newAverage}) async {
+  Future<dynamic> updateStudentMarks(
+      String uid, List<Results> results, double newAverage) async {
+    List<Map<String, dynamic>> updatedResults = results
+        .map((result) =>
+            <String, dynamic>{"result": result.mark, "subject": result.subject})
+        .toList();
+
+    print(updatedResults);
+
+    return await studentCollection
+        .doc(uid)
+        .update({"average": newAverage, "results": updatedResults});
+  }
+
+  Future<dynamic> addNewStudentMarks(String uid, Results result) async {
     List<Map<String, dynamic>> updatedResult = [
       {"result": result.mark, "subject": result.subject}
     ];
 
-    return await studentCollection.doc(uid).update(newAverage == null
-        ? {"results": FieldValue.arrayUnion(updatedResult)}
-        : {
-            "average": newAverage,
-            "results": FieldValue.arrayUnion(updatedResult)
-          });
+    return await studentCollection
+        .doc(uid)
+        .update({"results": FieldValue.arrayUnion(updatedResult)});
   }
 
   Future updateStudentSubjects(String uid, Subject subject) async {
@@ -90,25 +105,27 @@ class StudentServices {
       listToUpdate
           .add({'subCode': subject.subCode, 'subject': subject.subject});
     }
-    print(listToUpdate);
     studentCollection
         .doc(_currentStudentId)
         .update({"subjects": listToUpdate}).then(
             (value) => Fluttertoast.showToast(msg: "Unenrolled from course"));
   }
 
-  Future<void> addUser(name, email, password) {
-    return studentCollection.add({
-      'name': name,
+  Future<void> registerStudent(Student student) {
+    String docId = studentCollection.doc().id;
+    return studentCollection.doc(docId).set({
+      'uid': docId,
+      'name': student.name,
       'average': 0.0,
-      'email': email,
-      'password': password,
+      'email': student.email,
+      'password': student.password,
       'role': 'STU',
       'results': [],
       'subjects': []
     });
   }
 
+<<<<<<< HEAD
   Future loginAsStudent(email,password) async {
     await FirebaseFirestore.instance
         .collection('students')
@@ -134,6 +151,21 @@ class StudentServices {
       'age': age,
       'mobileNumber': mobileNumber,
       "image": "https://firebasestorage.googleapis.com/v0/b/bringmelk-93e0d.appspot.com/o/images.png?alt=media&token=e322fc19-8fc8-487f-9367-c5ef6191cfa6"
+=======
+  Future<void> deleteUser(id) {
+    return studentCollection
+        .doc(id)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  Future<void> updateStudent(Student student) async {
+    return await studentCollection.doc(student.uid).update({
+      'name': student.name,
+      'email': student.email,
+      'password': student.password,
+>>>>>>> 2c11894ead14fd64700596651e1b64b74eeb8419
     });
   }
 }

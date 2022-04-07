@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:student_profile/screens/teacher/teacher_add_marks.dart';
 import 'package:student_profile/screens/teacher/teacher_profile.dart';
+import 'package:student_profile/screens/teacher/view_recommendations_screen.dart';
 
 class TeacherHome extends StatefulWidget {
   const TeacherHome({Key? key}) : super(key: key);
@@ -19,9 +20,10 @@ class _TeacherHomeState extends State<TeacherHome> {
     });
   }
 
-  final List _teacherScreens = [
+  final List _teacherScreens = const [
     TeacherProfile(),
     AddMarks(),
+    ViewRecommendationsScreen(),
   ];
 
   @override
@@ -33,6 +35,9 @@ class _TeacherHomeState extends State<TeacherHome> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
           BottomNavigationBarItem(
               icon: Icon(Icons.post_add), label: 'Add Marks'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.recommend,),  label: 'Recommendations'
+          )
         ],
         currentIndex: _selectedIndex,
         onTap: _onOptionSelect,

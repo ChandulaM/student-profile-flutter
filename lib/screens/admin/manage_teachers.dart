@@ -16,14 +16,15 @@ class ManageTeacher extends StatefulWidget {
   _ManageTeacherState createState() => _ManageTeacherState();
 }
 
+final List<Subject> _subjects = [
+  Subject(subCode: 'MA10', subject: "Maths"),
+  Subject(subCode: 'SC10', subject: "Science"),
+  Subject(subCode: 'GEO11', subject: "Geography"),
+  Subject(subCode: 'HSCI10', subject: "Health Science"),
+  Subject(subCode: 'ENG11', subject: "English"),
+];
+
 class _ManageTeacherState extends State<ManageTeacher> {
-  static final List<Subject> _subjects = [
-    Subject(subCode: 'MA10', subject: "Maths"),
-    Subject(subCode: 'SC10', subject: "Science"),
-    Subject(subCode: 'GEO11', subject: "Geography"),
-    Subject(subCode: 'HSCI10', subject: "Helth Sciense"),
-    Subject(subCode: 'ENG11', subject: "English"),
-  ];
   final _items = _subjects
       .map((sub) => MultiSelectItem<Subject>(sub, sub.subject))
       .toList();
@@ -70,16 +71,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
       passwordController.clear();
     }
 
-    // CollectionReference students =
-    //     FirebaseFirestore.instance.collection('students');
-
-    // Future<void> addUser() {
-    //   return students
-    //       .add({'name': name, 'email': email, 'password': password})
-    //       .then((value) => print('User Added'))
-    //       .catchError((error) => print('Failed to Add user: $error'));
-    // }
-
     void showToast(String message) {
       Fluttertoast.showToast(
           msg: message,
@@ -99,12 +90,11 @@ class _ManageTeacherState extends State<ManageTeacher> {
           email: email,
           password: password,
           subjects: _selectedSubjects);
-      await TeacherService().addUser(teacher);
-      // .then((value) => showToast("Teacher registered successfully"))
-      // .catchError((err) => showToast("Something went wrong!"));
+      TeacherService()
+          .registerTeacher(teacher)
+          .then((value) => showToast("Teacher registered successfully"))
+          .catchError((err) => showToast("Something went wrong!"));
     }
-
-    print(_selectedSubjects);
 
     return Scaffold(
       body: SafeArea(
@@ -153,7 +143,7 @@ class _ManageTeacherState extends State<ManageTeacher> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Registeration",
+                  "Registration",
                   style: GoogleFonts.lato(
                       textStyle: const TextStyle(
                     fontSize: 25,
@@ -283,7 +273,6 @@ class _ManageTeacherState extends State<ManageTeacher> {
                           ),
                           ElevatedButton(
                             onPressed: () async {
-                              // Validate returns true if the form is valid, otherwise false.
                               if (_formKey.currentState!.validate()) {
                                 setState(() {
                                   name = nameController.text;

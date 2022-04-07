@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:student_profile/models/Student.dart';
+import 'package:confirm_dialog/confirm_dialog.dart';
+import 'package:student_profile/screens/admin/update_student.dart';
+import 'package:student_profile/services/student_services.dart';
 
 class StudentList extends StatefulWidget {
   const StudentList({Key? key, required this.list}) : super(key: key);
@@ -30,6 +34,17 @@ class _StudentListState extends State<StudentList> {
               student.name.toLowerCase().contains(value.toLowerCase()))
           .toList();
     });
+  }
+
+  void showToast(String message) {
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: const Color.fromARGB(255, 4, 208, 21),
+        textColor: Colors.white,
+        fontSize: 16.0);
   }
 
   @override
@@ -82,10 +97,6 @@ class _StudentListState extends State<StudentList> {
                   itemCount: filteredStudents.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      // onTap: () {
-                      //   Navigator.of(context).pushNamed(Country.routeName,
-                      //       arguments: filteredStudents[index]);
-                      // },
                       child: Card(
                         elevation: 10,
                         child: Padding(
@@ -103,7 +114,18 @@ class _StudentListState extends State<StudentList> {
                               Expanded(
                                 flex: 1,
                                 child: IconButton(
-                                  onPressed: () => {},
+                                  onPressed: () async {
+                                    if (await confirm(context)) {
+                                      StudentServices()
+                                          .deleteUser(
+                                              filteredStudents[index].uid)
+                                          .then((value) => showToast(
+                                              "Student removed successfully"))
+                                          .catchError((err) => showToast(
+                                              "Something went wrong!"));
+                                    }
+                                    return print('pressedCancel');
+                                  },
                                   icon: const Icon(Icons.delete_forever_sharp),
                                   color: Colors.red,
                                   iconSize: 30,
@@ -112,7 +134,15 @@ class _StudentListState extends State<StudentList> {
                               Expanded(
                                 flex: 0,
                                 child: IconButton(
-                                  onPressed: () => {},
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => UpdateStudent(
+                                              student:
+                                                  filteredStudents[index])),
+                                    );
+                                  },
                                   icon: const Icon(Icons.edit_note_rounded),
                                   color: Colors.green,
                                   iconSize: 30,
@@ -125,7 +155,6 @@ class _StudentListState extends State<StudentList> {
                     );
                   })
               : const Center(
-                  //child: CircularProgressIndicator(),
                   child: Text(
                     "No such name registerd !",
                     style: TextStyle(fontSize: 20),

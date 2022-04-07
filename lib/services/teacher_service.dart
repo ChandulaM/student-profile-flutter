@@ -6,7 +6,9 @@ class TeacherService {
   final CollectionReference _teacherCollectionRef =
       FirebaseFirestore.instance.collection('teachers');
 
-  final String _currentTeacherId = 'YmUYgt6k5dJ4KzkJgsLq';
+
+  final String _currentTeacherId = 'y31uesvV6Hjor8fRY4Wf';
+
 
   Teacher _teacherFromSnapshot(DocumentSnapshot snapshot) {
     return Teacher(
@@ -46,13 +48,39 @@ class TeacherService {
     return _teacherCollectionRef.snapshots().map(_teachersFromSnapshot);
   }
 
-  Future addUser(Teacher teacher) async {
-    return await _teacherCollectionRef.add({
+  Future registerTeacher(Teacher teacher) async {
+    String docId = _teacherCollectionRef.doc().id;
+    final teacherSubjects = teacher.subjects
+        .map((e) => {"subject": e.subject, "subCode": e.subCode})
+        .toList();
+    Map<String, dynamic> teacherToAdd = {
+      'uid': docId,
       'name': teacher.name,
       'email': teacher.email,
       'password': teacher.password,
       'role': teacher.role,
-      'subjects': teacher.subjects
+      'subjects': teacherSubjects
+    };
+    return await _teacherCollectionRef.doc(docId).set(teacherToAdd);
+  }
+
+  Future<void> deleteUser(id) {
+    return _teacherCollectionRef
+        .doc(id)
+        .delete()
+        .then((value) => print("User Deleted"))
+        .catchError((error) => print("Failed to delete user: $error"));
+  }
+
+  Future<void> updateTeacher(Teacher teacher) async {
+    final teacherSubjects = teacher.subjects
+        .map((e) => {"subject": e.subject, "subCode": e.subCode})
+        .toList();
+    return await _teacherCollectionRef.doc(teacher.uid).update({
+      'name': teacher.name,
+      'email': teacher.email,
+      'password': teacher.password,
+      'subjects': teacherSubjects
     });
   }
 

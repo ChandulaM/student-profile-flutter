@@ -5,20 +5,18 @@ import 'package:student_profile/models/Recommendation.dart';
 import 'package:student_profile/models/Results.dart';
 import 'package:student_profile/models/Student.dart';
 import 'package:student_profile/models/Subject.dart';
-import 'package:student_profile/services/recommendation_service.dart';
+import 'package:student_profile/screens/teacher/recommendation_screen.dart';
 import 'package:student_profile/services/student_services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class AddMarkForm extends StatefulWidget {
-  const AddMarkForm(
-      {Key? key,
-      required this.student,
-      required this.subject,
-      required this.recommendations})
-      : super(key: key);
+  const AddMarkForm({
+    Key? key,
+    required this.student,
+    required this.subject,
+  }) : super(key: key);
   final Student student;
   final Subject subject;
-  final List<Recommendation> recommendations;
 
   @override
   _AddMarkFormState createState() => _AddMarkFormState();
@@ -26,8 +24,7 @@ class AddMarkForm extends StatefulWidget {
 
 class _AddMarkFormState extends State<AddMarkForm> {
   final _formKey = GlobalKey<FormState>();
-  late double _subjectMark;
-  late String _recommendation;
+  double _subjectMark = 0.0;
 
   List<Results> createUpdatedResultsList(
       List<Results> results, String subCode) {
@@ -40,71 +37,53 @@ class _AddMarkFormState extends State<AddMarkForm> {
     return results;
   }
 
-  Recommendation createStudentRecommendations(
-      List<Recommendation> recommendations, Student student, String subCode) {
-    Recommendation recommendation =
-        Recommendation(studentId: student.uid, recommendations: [
-      {"subject": subCode, "recommendation": _recommendation}
-    ]);
-
-    for (var stuRecom in recommendations) {
-      if (stuRecom.studentId == student.uid) {
-        for (var subjectRecom in stuRecom.recommendations) {
-          if (subjectRecom['subject'] == subCode) {
-            subjectRecom['recommendation'] = _recommendation;
-            recommendation = stuRecom;
-          }
-        }
-      }
-    }
-    return recommendation;
-  }
-
-  void showToast(String message) {
+  void showToast(String message, bool isError) {
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
         timeInSecForIosWeb: 1,
-        backgroundColor: Colors.blue[300],
+        backgroundColor: isError ? Colors.red : Colors.blue[300],
         textColor: Colors.white,
         fontSize: 16.0);
   }
 
-  String findCurrentRecommendation(
-      List<Recommendation> recommendations, Student student, String subCode) {
-    String currentRecommendation = '';
-    for (var stuRecom in recommendations) {
-      if (stuRecom.studentId == student.uid) {
-        stuRecom.recommendations.forEach((recommendation) {
-          if (recommendation['subject'] == subCode) {
-            currentRecommendation = recommendation['recommendation'] as String;
-          }
-        });
-      }
-    }
-    return currentRecommendation;
-  }
-
   double caculateNewAverage(Student student) {
     double total = 0;
+    int subjectCount = 0;
     for (var result in student.results) {
-      total += result.mark;
+      if (result.mark > 0) {
+        subjectCount++;
+        total += result.mark;
+      }
     }
-    double average = total / student.results.length;
+    double average = total / subjectCount;
     return average;
+  }
+
+  List<Results> updatedResults(Student student, String subCode) {
+    List<Results> studentResults = student.results;
+    for (var result in studentResults) {
+      if (subCode == result.subject) {
+        result.mark = _subjectMark;
+      }
+    }
+    return studentResults;
+  }
+
+  String? markValidation(String? val) {
+    if (val!.isEmpty) {
+      return "Enter a mark";
+    }
+    if (int.parse(val) < 0 || int.parse(val) > 100) {
+      return "Enter a value between 0 and 100";
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     Student student = widget.student;
     String subCode = widget.subject.subCode;
-    List<Recommendation> studentRecommendations = widget.recommendations;
-
-    _subjectMark =
-        student.results.firstWhere((result) => result.subject == subCode).mark;
-    String currentRecommendation =
-        findCurrentRecommendation(studentRecommendations, student, subCode);
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 15.0),
@@ -130,11 +109,14 @@ class _AddMarkFormState extends State<AddMarkForm> {
                 children: [
                   Expanded(
                     child: TextFormField(
-                      initialValue: _subjectMark.toString(),
+                      initialValue: student.results
+                          .firstWhere((result) => result.subject == subCode)
+                          .mark
+                          .toString(),
                       keyboardType: TextInputType.number,
                       decoration:
                           textFieldDecoration.copyWith(hintText: "Enter marks"),
-                      validator: (val) => val!.isEmpty ? 'Enter mark' : null,
+                      validator: (val) => markValidation(val),
                       onChanged: (val) => setState(() {
                         _subjectMark =
                             val.isNotEmpty ? double.parse(val) : _subjectMark;
@@ -147,26 +129,16 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          Results newResult =
-                              Results(subject: subCode, mark: _subjectMark);
+                          List<Results> newResults =
+                              updatedResults(student, subCode);
                           double newAverage = caculateNewAverage(student);
                           StudentServices()
-                              .updateStudentMarks(student.uid, newResult,
-                                  newAverage: newAverage)
-                              .then((value) =>
-                                  showToast("Marks updated successfully"))
-                              .catchError((error) => print(error));
-
-                          if (_recommendation != "") {
-                            Recommendation recommendation =
-                                createStudentRecommendations(
-                                    studentRecommendations, student, subCode);
-                            RecommendationService()
-                                .addOrUpdateRecommendation(recommendation)
-                                .then((value) =>
-                                    showToast("Recommendation updated"))
-                                .catchError((error) => print(error));
-                          }
+                              .updateStudentMarks(
+                                  student.uid, newResults, newAverage)
+                              .then((value) => showToast(
+                                  "Marks updated successfully", false))
+                              .catchError((error) => showToast(
+                                  "Marks could not be updated!", true));
                         }
                       },
                       child: const Text('Add'))
@@ -175,7 +147,7 @@ class _AddMarkFormState extends State<AddMarkForm> {
               const SizedBox(
                 height: 20.0,
               ),
-              TextFormField(
+              /*TextFormField(
                 initialValue: currentRecommendation,
                 decoration: textFieldDecoration.copyWith(
                     hintText: 'Add recommendations (if any)'),
@@ -185,6 +157,19 @@ class _AddMarkFormState extends State<AddMarkForm> {
                   _recommendation =
                       val.isNotEmpty ? val : currentRecommendation;
                 }),
+              )*/
+              InkWell(
+                child: const Text("Add recommendation"),
+                onTap: () {
+                  Map data = {
+                    "student_id": widget.student.uid,
+                    "subject_id": widget.subject.subCode,
+                  };
+
+                  Navigator.pushNamed(
+                      context, RecommendationAddScreen.routeName,
+                      arguments: data);
+                },
               )
             ],
           )),
