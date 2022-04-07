@@ -89,10 +89,6 @@ class _TeacherListState extends State<TeacherList> {
                   itemCount: filteredTeachers!.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      // onTap: () {
-                      //   Navigator.of(context).pushNamed(Country.routeName,
-                      //       arguments: filteredCountries[index]);
-                      // },
                       child: Card(
                         elevation: 10,
                         child: Padding(
@@ -155,10 +151,6 @@ class _TeacherListState extends State<TeacherList> {
                   itemCount: allTeachers.length,
                   itemBuilder: (BuildContext context, int index) {
                     return GestureDetector(
-                      // onTap: () {
-                      //   Navigator.of(context).pushNamed(Country.routeName,
-                      //       arguments: filteredCountries[index]);
-                      // },
                       child: Card(
                         elevation: 10,
                         child: Padding(

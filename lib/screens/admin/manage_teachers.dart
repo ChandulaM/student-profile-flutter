@@ -20,7 +20,7 @@ final List<Subject> _subjects = [
   Subject(subCode: 'MA10', subject: "Maths"),
   Subject(subCode: 'SC10', subject: "Science"),
   Subject(subCode: 'GEO11', subject: "Geography"),
-  Subject(subCode: 'HSCI10', subject: "Helth Sciense"),
+  Subject(subCode: 'HSCI10', subject: "Health Science"),
   Subject(subCode: 'ENG11', subject: "English"),
 ];
 
